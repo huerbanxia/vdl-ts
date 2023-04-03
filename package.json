@@ -1,5 +1,5 @@
 {
-  "name": "vdl-ts",
+  "name": "vdl-ts1",
   "version": "1.0.0",
   "description": "An Electron application with Vue and TypeScript",
   "main": "./out/main/index.js",
@@ -22,7 +22,10 @@
   "dependencies": {
     "@electron-toolkit/preload": "^1.0.3",
     "@electron-toolkit/utils": "^1.0.2",
-    "electron-updater": "^5.3.0"
+    "axios": "^1.3.4",
+    "electron-updater": "^5.3.0",
+    "electron-win-state": "^1.1.22",
+    "js-yaml": "^4.1.0"
   },
   "devDependencies": {
     "@electron-toolkit/tsconfig": "^1.0.1",
@@ -38,10 +41,17 @@
     "eslint": "^8.36.0",
     "eslint-plugin-vue": "^9.10.0",
     "less": "^4.1.3",
+    "lodash": "^4.17.21",
+    "pinia": "^2.0.33",
+    "pinia-plugin-persistedstate": "^3.1.0",
     "prettier": "^2.8.7",
     "typescript": "^4.9.5",
+    "unplugin-auto-import": "^0.15.2",
+    "unplugin-element-plus": "^0.7.0",
+    "unplugin-vue-components": "^0.24.1",
     "vite": "^4.2.1",
     "vue": "^3.2.47",
+    "vue-router": "^4.1.6",
     "vue-tsc": "^1.2.0"
   }
 }
