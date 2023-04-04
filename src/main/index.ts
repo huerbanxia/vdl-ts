@@ -5,6 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import log from 'electron-log'
 import defaultSetting from '../common/defaultSetting'
 import { setting, saveSetting } from './setting'
+import registerListtener from './listener'
 
 function createWindow(): void {
   log.info('创建新窗口')
@@ -13,6 +14,16 @@ function createWindow(): void {
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
+    // 隐藏标题栏
+    titleBarStyle: 'hidden',
+    // 显示标题栏按钮 且支持通过jsApi在渲染进程中进行修改 详见以下链接
+    // https://github.com/WICG/window-controls-overlay/blob/main/explainer.md#javascript-apis
+    // https://github.com/WICG/window-controls-overlay/blob/main/explainer.md#css-environment-variables
+    titleBarOverlay: {
+      color: '#2f3241',
+      symbolColor: '#74b1be',
+      height: 30
+    },
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false
@@ -63,6 +74,8 @@ function createWindow(): void {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+  // 注册主进程监听事件
+  registerListtener(mainWindow)
 }
 
 app.whenReady().then(() => {

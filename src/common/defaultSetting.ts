@@ -5,6 +5,11 @@ const defaultSetting: global.app.AppSetting = {
     width: 1280,
     height: 720
   },
+  proxy: {
+    protocol: 'http',
+    host: '127.0.0.1',
+    port: 1081
+  },
   axios: {
     timeout: 5000,
     authorization:
