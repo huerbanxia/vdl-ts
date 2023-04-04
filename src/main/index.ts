@@ -2,16 +2,12 @@ import { app, shell, BrowserWindow, BrowserWindowConstructorOptions } from 'elec
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import Store from 'electron-store'
 import log from 'electron-log'
 import defaultSetting from '../common/defaultSetting'
-
-// 数据仓库
-const store = new Store()
-// 全局设置
-const setting = (store.get('setting') as global.app.AppSetting) || defaultSetting
+import { setting, saveSetting } from './setting'
 
 function createWindow(): void {
+  log.info('创建新窗口')
   const options: BrowserWindowConstructorOptions = {
     ...defaultSetting,
     show: false,
@@ -89,7 +85,8 @@ app.whenReady().then(() => {
 
 // 当关闭所有窗口时退出应用 macOS 除外
 app.on('window-all-closed', () => {
-  store.set('setting', setting)
+  saveSetting()
+  log.info('应用退出')
   if (process.platform !== 'darwin') {
     app.quit()
   }

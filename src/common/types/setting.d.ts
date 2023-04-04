@@ -20,7 +20,7 @@ declare namespace global {
         // 主机
         host: string
         // 端口号
-        port: string
+        port: number
       }
       // 下载设置
       download: {
