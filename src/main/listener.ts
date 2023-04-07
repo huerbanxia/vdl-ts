@@ -18,24 +18,25 @@ interface Params {
 // 主进程监听器统一注册
 export default function registerListtener(win: BrowserWindow): void {
   const wc = win.webContents
+  // 处理指定窗口大小事件
   ipcMain.handle('on-set-win-size', (_event, width, height) => {
-    log.info(`重设窗口大小为 ${width}x${height}`)
-    if (width && height) {
-      win.setSize(width, height)
-    } else {
-      // 设置为默认大小
-      win.setSize(defaultSetting.state.width, defaultSetting.state.height)
-
-      // 保存状态
-      setting.state.width = defaultSetting.state.width
-      setting.state.height = defaultSetting.state.height
+    if (!width || !height) {
+      width = defaultSetting.state.width
+      height = defaultSetting.state.height
     }
+    log.info(`重设窗口大小为 ${width}x${height}`)
+    // 设置为默认大小
+    win.setSize(width, height)
+    // 保存状态
+    setting.state.width = defaultSetting.state.width
+    setting.state.height = defaultSetting.state.height
   })
 
   ipcMain.handle('on-login', () => {
     const win = new BrowserWindow({
       width: 1280,
       height: 720,
+      autoHideMenuBar: true,
       webPreferences: {
         //共享session
         session: session.fromPartition('persist:session-iwara')
@@ -79,7 +80,8 @@ export default function registerListtener(win: BrowserWindow): void {
         preload: join(__dirname, '../preload/loadurl.js'),
         // 不构建窗口只在内存中进行操作
         offscreen: true,
-        session: session.fromPartition('persist:session-iwara') //共享session
+        //共享session
+        session: session.fromPartition('persist:session-iwara')
       }
     })
     // win.webContents.openDevTools()

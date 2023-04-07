@@ -8,6 +8,9 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Document, Menu as IconMenu, Location, Expand, Fold } from '@element-plus/icons-vue'
+import useTaskStore from '../store/useTaskStore'
+
+const taskStore = useTaskStore()
 
 const router = useRouter()
 const isCollapse = ref(true)
@@ -58,7 +61,10 @@ const setWinSize = (): void => {
         <el-menu-item index="3" @click="navigate()">
           <el-icon><IconMenu /></el-icon>
           <!-- 加入router-link后文字无法自动隐藏，使用if手动隐藏 -->
-          <div v-if="!isCollapse">任务列表</div>
+          <div v-if="!isCollapse">
+            任务列表
+            <span v-if="taskStore.doingTask.length > 0">{{ taskStore.doingTask.length }}</span>
+          </div>
         </el-menu-item>
       </router-link>
       <router-link v-slot="{ navigate }" to="/versions" custom>

@@ -50,8 +50,14 @@ const useTaskStore = defineStore('taskStore', {
       }
     },
     deleteTask(id: string) {
-      console.log(`删除id ${id}`)
-      _.remove(this.taskList, { id: id })
+      const deletedTask = _.remove(this.taskList, { id: id })
+      if (deletedTask.length > 0) {
+        ElMessage({
+          message: `成功删除${deletedTask.length}个下载任务`,
+          type: 'success',
+          grouping: true
+        })
+      }
     }
   }
 })
