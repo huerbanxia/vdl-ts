@@ -3,6 +3,7 @@ import { join } from 'path'
 import http from './utils/http'
 import WorkerPool from './utils/worker_pool'
 import { setting } from './setting'
+import log from 'electron-log'
 
 const poolSize = setting.download.maxTaskNum
 const pool = new WorkerPool(poolSize)
@@ -52,13 +53,13 @@ export default function registerListtener(win): void {
     } else {
       params.sort = data.sort
     }
-    console.log(params)
+    log.info(params)
     const res = await http.get('https://api.iwara.tv/videos?page=0&limit=24', { params })
     return res
   })
 
   ipcMain.handle('on-download-video', (_e, data) => {
-    data.forEach((item) => {
+    data.forEach((item: common.params.IDownloadParam) => {
       // https://www.iwara.tv/video/jUYUofGNEFJTgr/darling-dance-or-ninomae-inanis-pov
       const url = 'https://www.iwara.tv/video/' + item.id + '/' + item.slug
       const win = new BrowserWindow({
@@ -93,7 +94,7 @@ export default function registerListtener(win): void {
         if (details.resourceType === 'image' || details.resourceType === 'stylesheet') {
           callback({ cancel: true })
         } else {
-          callback({})
+          callback({ cancel: false })
         }
       })
 
@@ -110,7 +111,7 @@ export default function registerListtener(win): void {
           setTimeout(() => {
             win.close()
           }, 1000)
-        }, 4000)
+        }, setting.download.waitTime)
       })
 
       win.loadURL(url)

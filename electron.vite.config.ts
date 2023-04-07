@@ -32,14 +32,17 @@ export default defineConfig({
       }
     },
     plugins: [
-      vue(),
       AutoImport({
-        resolvers: [ElementPlusResolver()]
+        // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
+        imports: ['vue'],
+        resolvers: [ElementPlusResolver()],
+        dts: resolve('./src/renderer', 'auto-imports.d.ts')
       }),
       Components({
         resolvers: [ElementPlusResolver()]
       }),
-      ElementPlus({})
+      ElementPlus({}),
+      vue()
     ]
   }
 })

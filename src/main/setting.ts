@@ -6,9 +6,9 @@ const store = new Store()
 // 全局设置
 // const setting: global.app.AppSetting =
 //   (store.get('setting') as global.app.AppSetting) || defaultSetting
-const setting: global.app.AppSetting = {
+const setting: common.AppSetting = {
   ...defaultSetting,
-  ...(store.get('setting') as global.app.AppSetting)
+  ...(store.get('setting') as common.AppSetting)
 }
 
 const saveSetting = (): void => {

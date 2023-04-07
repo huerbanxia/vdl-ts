@@ -1,5 +1,5 @@
 // 应用默认设置
-const defaultSetting: global.app.AppSetting = {
+const defaultSetting: common.AppSetting = {
   isSaveState: true,
   state: {
     width: 1280,
@@ -16,6 +16,7 @@ const defaultSetting: global.app.AppSetting = {
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJjNDI1ODNhLTI5NGQtNDI1Ny04ZGZmLTMzMDc0MDljNjc5ZCIsInR5cGUiOiJyZWZyZXNoX3Rva2VuIiwiaXNzIjoiaXdhcmEiLCJpYXQiOjE2ODAyNjcwODEsImV4cCI6MTY4Mjg1OTA4MX0.8cn1GGJkOAmaI6DMr7RnGgWR0LeJ_G_XcIuGVcW4Owk'
   },
   download: {
+    waitTime: 5 * 1000,
     maxTaskNum: 1,
     savePath: 'D:\\Download\\test'
   }
