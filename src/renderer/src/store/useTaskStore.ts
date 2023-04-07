@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import _ from 'lodash'
+import { ElMessage } from 'element-plus'
 
 interface TaskState {
   taskList: common.model.Task[]
@@ -24,9 +25,32 @@ const useTaskStore = defineStore('taskStore', {
   },
   actions: {
     addTask(task: common.model.Task) {
-      this.taskList.push(task)
+      const index = _.findIndex(this.taskList, { fileId: task.fileId })
+      if (index === -1) {
+        this.taskList.push(task)
+        return true
+      }
+      return false
+    },
+    addTasks(tasks: common.model.Task[]) {
+      let successNum = 0
+      tasks.forEach((item) => {
+        if (this.addTask(item)) {
+          successNum++
+        }
+      })
+      if (successNum === tasks.length) {
+        ElMessage.success(`成功添加${successNum}个下载任务 请到任务列表查看`)
+      } else if (successNum < tasks.length && successNum > 0) {
+        ElMessage.success(
+          `成功添加${successNum}个下载任务 跳过重复任务${tasks.length - successNum}个`
+        )
+      } else {
+        ElMessage.warning(`所选任务已存在！`)
+      }
     },
     deleteTask(id: string) {
+      console.log(`删除id ${id}`)
       _.remove(this.taskList, { id: id })
     }
   }

@@ -11,7 +11,7 @@ const defaultSetting: common.AppSetting = {
     port: 1081
   },
   axios: {
-    timeout: 5000,
+    timeout: 10 * 1000,
     authorization:
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJjNDI1ODNhLTI5NGQtNDI1Ny04ZGZmLTMzMDc0MDljNjc5ZCIsInR5cGUiOiJyZWZyZXNoX3Rva2VuIiwiaXNzIjoiaXdhcmEiLCJpYXQiOjE2ODAyNjcwODEsImV4cCI6MTY4Mjg1OTA4MX0.8cn1GGJkOAmaI6DMr7RnGgWR0LeJ_G_XcIuGVcW4Owk'
   },

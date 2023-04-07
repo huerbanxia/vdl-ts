@@ -26,7 +26,7 @@ const api = {
   },
   // 下载视频
   downloadVideo(data: object): void {
-    ipcRenderer.invoke('on-download-video', data)
+    ipcRenderer.invoke('on-download-videos', data)
   },
   // 更新下载进度条
   updateProcess(callback: ICallbackInterface): void {

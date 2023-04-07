@@ -7,9 +7,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import useWinStore from '../../store/useWinStore'
+import useTaskStore from '../../store/useTaskStore'
 import { ElMessage } from 'element-plus'
 
 const winStore = useWinStore()
+const taskStore = useTaskStore()
+
 const word = ref('')
 const sort = ref('date')
 const isSubscribed = ref('1')
@@ -72,21 +75,42 @@ const handleSortSelectChange = (val: string): void => {
 }
 
 // 下载按钮点击事件
-const download = (): void => {
+// const download = (): void => {
+//   const rows = tableRef.value.getSelectionRows()
+//   const data: common.params.IDownloadParam[] = []
+//   rows.forEach((item: common.model.Video) => {
+//     const info = {
+//       id: item.id,
+//       title: item.title,
+//       slug: item.slug,
+//       author: item.user.name,
+//       fileId: item.file.id,
+//       createdAt: item.createdAt.substring(0, 10).replaceAll('-', '%2F')
+//     }
+//     data.push(info)
+//   })
+//   // window.api.downloadVideo(data)
+// }
+
+const addTasks = (): void => {
   const rows = tableRef.value.getSelectionRows()
-  const data: common.params.IDownloadParam[] = []
-  rows.forEach((item: common.model.Video) => {
-    const info = {
-      id: item.id,
-      title: item.title,
-      slug: item.slug,
-      author: item.user.name,
-      fileId: item.file.id,
-      createdAt: item.createdAt.substring(0, 10).replaceAll('-', '%2F')
-    }
-    data.push(info)
-  })
-  window.api.downloadVideo(data)
+  if (rows.length > 0) {
+    const data: common.model.Task[] = []
+    rows.forEach((item: common.model.Video) => {
+      const task: common.model.Task = {
+        id: Math.random().toString(),
+        fileId: item.file.id,
+        filename: item.title,
+        size: item.file.size,
+        process: 0,
+        status: '0'
+      }
+      data.push(task)
+    })
+    taskStore.addTasks(data)
+  } else {
+    ElMessage.warning('未选择数据！')
+  }
 }
 
 const updateTableProcess = (id: string, process: number, status: boolean): void => {
@@ -153,12 +177,12 @@ onMounted(() => {
       ></el-col>
       <el-col :span="2"><el-button style="width: 100%" @click="loadData">刷新</el-button></el-col>
       <el-col :span="2"
-        ><el-button type="primary" plain style="width: 100%" @click="download"
+        ><el-button type="primary" plain style="width: 100%" @click="addTasks()"
           >下载</el-button
         ></el-col
       >
       <el-col :span="2"
-        ><el-button style="width: 100%" type="danger" plain @click="deleteData"
+        ><el-button style="width: 100%" type="danger" plain @click="deleteData()"
           >删除</el-button
         ></el-col
       >

@@ -2,7 +2,7 @@ import defaultSetting from '../common/defaultSetting'
 import Store from 'electron-store'
 import log from 'electron-log'
 // 数据仓库
-const store = new Store()
+const store = new Store({ name: 'vdl-config' })
 // 全局设置
 // const setting: global.app.AppSetting =
 //   (store.get('setting') as global.app.AppSetting) || defaultSetting

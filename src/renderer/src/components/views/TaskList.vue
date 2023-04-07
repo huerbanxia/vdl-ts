@@ -39,15 +39,15 @@ const getStatusName = (status: string): string => {
 
 onMounted(() => {
   // taskStore.$reset()
-  for (let i = 0; i < 10; i++) {
-    taskStore.addTask({
-      id: Math.random().toString(),
-      filename: '测试',
-      size: '200',
-      process: 50,
-      status: '1'
-    })
-  }
+  // for (let i = 0; i < 10; i++) {
+  //   taskStore.addTask({
+  //     id: Math.random().toString(),
+  //     filename: '测试',
+  //     size: '200',
+  //     process: 50,
+  //     status: '1'
+  //   })
+  // }
 })
 </script>
 
@@ -74,7 +74,7 @@ onMounted(() => {
               <el-progress :percentage="scope.row.process" :stroke-width="10" />
             </template>
           </el-table-column>
-          <el-table-column fixed="right" label="操作">
+          <el-table-column fixed="right" label="操作" width="100">
             <template #default="scope">
               <el-button type="danger" @click="handleDeleteTask(scope.row)">删除</el-button>
             </template>
