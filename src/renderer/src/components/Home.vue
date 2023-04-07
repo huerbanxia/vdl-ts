@@ -21,13 +21,13 @@ const showMessage = (type, msg): void => {
 }
 onMounted(() => {
   // 注册全局消息钩子
-  window.api.showMessage((_event, type, msg) => {
+  window.api.showMessage((_event, type: string, msg: string) => {
     showMessage(type, msg)
   })
 })
 
 const isCollapse = ref(false)
-const changeCollapse = (collapse): void => {
+const changeCollapse = (collapse: boolean): void => {
   isCollapse.value = collapse
 }
 </script>

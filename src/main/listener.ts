@@ -3,8 +3,10 @@ import { join } from 'path'
 import http from './utils/http'
 import WorkerPool from './utils/worker_pool'
 import { setting } from './setting'
+import defaultSetting from '../common/defaultSetting'
 import log from 'electron-log'
 
+// 初始化下载线程池
 const poolSize = setting.download.maxTaskNum
 const pool = new WorkerPool(poolSize)
 
@@ -14,15 +16,19 @@ interface Params {
 }
 
 // 主进程监听器统一注册
-export default function registerListtener(win): void {
+export default function registerListtener(win: BrowserWindow): void {
   const wc = win.webContents
-
-  ipcMain.handle('on-set-win-size', (width, height) => {
+  ipcMain.handle('on-set-win-size', (_event, width, height) => {
+    log.info(`重设窗口大小为 ${width}x${height}`)
     if (width && height) {
-      console.log()
+      win.setSize(width, height)
     } else {
-      console.log('重设窗口大小')
-      win.resetWindowToDefault()
+      // 设置为默认大小
+      win.setSize(defaultSetting.state.width, defaultSetting.state.height)
+
+      // 保存状态
+      setting.state.width = defaultSetting.state.width
+      setting.state.height = defaultSetting.state.height
     }
   })
 
@@ -31,14 +37,19 @@ export default function registerListtener(win): void {
       width: 1280,
       height: 720,
       webPreferences: {
-        // 不构建窗口只在内存中进行操作
-        session: session.fromPartition('persist:session-iwara') //共享session
+        //共享session
+        session: session.fromPartition('persist:session-iwara')
       }
     })
-    win.webContents.session.setProxy({
-      mode: 'fixed_servers',
-      proxyRules: 'http://127.0.0.1:1081'
-    })
+    // 判断是否需要代理
+    if (setting.proxy) {
+      const proxy = setting.proxy
+      const proxyUrl = proxy.protocol + '://' + proxy.host + ':' + proxy.port
+      win.webContents.session.setProxy({
+        mode: 'fixed_servers',
+        proxyRules: proxyUrl
+      })
+    }
     win.loadURL('https://www.iwara.tv/login')
   })
 

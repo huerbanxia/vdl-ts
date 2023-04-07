@@ -12,7 +12,6 @@ export const STORE_NAMES = {
 export const DOWNLOAD_STATUS = {
   RUN: 'run',
   WAITING: 'waiting',
-  PAUSE: 'pause',
   ERROR: 'error',
   COMPLETED: 'completed'
 } as const

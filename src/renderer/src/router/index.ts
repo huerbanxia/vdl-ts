@@ -21,6 +21,12 @@ const routes: Readonly<RouteRecordRaw[]> = [
     name: 'versions',
     // 路由懒加载
     component: () => import('@renderer/components/views/Versions.vue')
+  },
+  {
+    path: '/taskList',
+    name: 'taskList',
+    // 路由懒加载
+    component: () => import('@renderer/components/views/TaskList.vue')
   }
 ]
 
