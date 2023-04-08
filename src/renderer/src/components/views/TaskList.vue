@@ -55,15 +55,19 @@ onMounted(() => {
   <el-card class="container">
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="正在下载" name="doing">
+        <el-row class="button-group">
+          <el-button type="danger">批量删除</el-button>
+        </el-row>
         <el-table
           v-loading="doingTableLoading"
           :data="doingTableData"
           border
-          :height="winStore.tableHeight"
+          :height="winStore.tableHeight - 40"
           style="width: 100%"
         >
-          <el-table-column prop="filename" label="文件名" show-overflow-tooltip width="400" />
-          <el-table-column prop="size" label="文件大小" show-overflow-tooltip width="100" />
+          <el-table-column type="selection" width="45" />
+          <el-table-column prop="title" label="标题" show-overflow-tooltip width="400" />
+          <el-table-column prop="sizeFormat" label="文件大小" show-overflow-tooltip width="100" />
           <el-table-column prop="status" label="下载状态" show-overflow-tooltip width="100">
             <template #default="scope">
               {{ getStatusName(scope.row.status) }}
@@ -89,5 +93,8 @@ onMounted(() => {
 .container {
   margin: 0;
   height: 100%;
+}
+.button-group {
+  height: 40px;
 }
 </style>

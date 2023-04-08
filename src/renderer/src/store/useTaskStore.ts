@@ -5,6 +5,7 @@ import { ElMessage } from 'element-plus'
 interface TaskState {
   taskList: common.model.Task[]
 }
+
 // 窗口信息仓库
 const useTaskStore = defineStore('taskStore', {
   state: (): TaskState => {
@@ -33,20 +34,22 @@ const useTaskStore = defineStore('taskStore', {
       return false
     },
     addTasks(tasks: common.model.Task[]) {
-      let successNum = 0
-      tasks.forEach((item) => {
-        if (this.addTask(item)) {
-          successNum++
+      if (tasks.length > 0) {
+        let successNum = 0
+        tasks.forEach((item) => {
+          if (this.addTask(item)) {
+            successNum++
+          }
+        })
+        if (successNum === tasks.length) {
+          ElMessage.success(`成功添加${successNum}个下载任务 请到任务列表查看`)
+        } else if (successNum < tasks.length && successNum > 0) {
+          ElMessage.success(
+            `成功添加${successNum}个下载任务 跳过重复任务${tasks.length - successNum}个`
+          )
+        } else {
+          ElMessage.warning(`所选任务已存在！`)
         }
-      })
-      if (successNum === tasks.length) {
-        ElMessage.success(`成功添加${successNum}个下载任务 请到任务列表查看`)
-      } else if (successNum < tasks.length && successNum > 0) {
-        ElMessage.success(
-          `成功添加${successNum}个下载任务 跳过重复任务${tasks.length - successNum}个`
-        )
-      } else {
-        ElMessage.warning(`所选任务已存在！`)
       }
     },
     deleteTask(id: string) {

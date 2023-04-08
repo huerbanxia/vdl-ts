@@ -9,6 +9,7 @@ import { ref, onMounted } from 'vue'
 import useWinStore from '../../store/useWinStore'
 import useTaskStore from '../../store/useTaskStore'
 import { ElMessage } from 'element-plus'
+import { formatFileName, formatSize, formatDateTime } from '../../utils/format'
 
 const winStore = useWinStore()
 const taskStore = useTaskStore()
@@ -20,22 +21,6 @@ const isSubscribedDisable = ref(false)
 const tableRef = ref()
 const tableLoading = ref(true)
 const tableData = ref([])
-
-// 日期数据 格式化 （公共函数）+ 数字补0操作
-function addZero(num: number): string {
-  return num < 10 ? '0' + num : num + ''
-}
-function formatDateTime(date: string): string {
-  const time = new Date(Date.parse(date))
-  time.setTime(time.setHours(time.getHours()))
-  const Y = time.getFullYear() + '-'
-  const M = addZero(time.getMonth() + 1) + '-'
-  const D = addZero(time.getDate()) + ' '
-  const h = addZero(time.getHours()) + ':'
-  const m = addZero(time.getMinutes()) + ':'
-  const s = addZero(time.getSeconds())
-  return Y + M + D + h + m + s
-}
 
 const loadData = (): void => {
   tableLoading.value = true
@@ -96,17 +81,29 @@ const addTasks = (): void => {
   const rows = tableRef.value.getSelectionRows()
   if (rows.length > 0) {
     const data: common.model.Task[] = []
+    let youtubeVideoNum = 0
     rows.forEach((item: common.model.Video) => {
-      const task: common.model.Task = {
-        id: Math.random().toString(),
-        fileId: item.file.id,
-        filename: item.title,
-        size: item.file.size,
-        process: 0,
-        status: '0'
+      if (item.file) {
+        const task: common.model.Task = {
+          id: Math.random().toString(),
+          videoId: item.id,
+          fileId: item.file.id,
+          title: item.title,
+          titleFormat: formatFileName(item.title, ' '),
+          author: item.user.name,
+          size: item.file.size,
+          sizeFormat: formatSize(item.file.size),
+          process: 0,
+          status: '0'
+        }
+        data.push(task)
+      } else {
+        youtubeVideoNum++
       }
-      data.push(task)
     })
+    if (youtubeVideoNum > 0) {
+      ElMessage.warning(`跳过youtub源视频${youtubeVideoNum}个`)
+    }
     taskStore.addTasks(data)
   } else {
     ElMessage.warning('未选择数据！')
@@ -198,7 +195,6 @@ onMounted(() => {
       >
         <el-table-column type="selection" width="45" />
         <el-table-column type="index" width="45" />
-        <!-- <el-table-column prop="" label="预览" width="100" /> -->
         <el-table-column prop="title" label="标题" width="180" show-overflow-tooltip />
         <el-table-column prop="user.name" label="作者" width="100" show-overflow-tooltip />
         <el-table-column prop="numLikes" sortable label="Likes" width="90" />
