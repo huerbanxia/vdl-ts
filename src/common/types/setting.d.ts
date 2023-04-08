@@ -27,6 +27,8 @@ declare namespace common {
       intervalTime: number
       // 解析下载链接等待时间
       waitTime: number
+      // 解析失败后最大重试次数
+      failRetryNum: number
       // 同时下载任务数
       maxTaskNum: number
       // 下载路径

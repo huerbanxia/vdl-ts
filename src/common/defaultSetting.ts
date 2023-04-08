@@ -18,6 +18,7 @@ const defaultSetting: common.AppSetting = {
   download: {
     intervalTime: 4 * 1000,
     waitTime: 12 * 1000,
+    failRetryNum: 5,
     maxTaskNum: 1,
     savePath: 'D:\\Download\\test'
   }

@@ -147,11 +147,12 @@ export default function registerListtener(win: BrowserWindow): void {
   // 监听解析失败事件 再次解析
   ipcMain.on('on-download-video', (_event, data: common.model.Task) => {
     log.info(`接收到失败消息 ${data.titleFormat} 当前重试次数${data.retryNum}`)
-    if (data.retryNum < 2) {
+    if (data.retryNum < setting.download.failRetryNum) {
       log.info(`再次尝试解析 ${data.titleFormat}`)
       analyzeDownloadUrl(data)
     } else {
       log.info(`放弃解析 ${data.titleFormat}`)
+      //TODO 更新任务列表状态 解析失败
     }
   })
 
