@@ -56,6 +56,7 @@ parentPort?.on('message', (task) => {
         fs.renameSync(tempPath, realPath)
         log.info(`下载完成 ${realPath}`)
         const result = {
+          over: true,
           taskId: data.id,
           status: '3',
           process: '100.00',

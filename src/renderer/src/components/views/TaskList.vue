@@ -9,8 +9,6 @@ const winStore = useWinStore()
 const taskStore = useTaskStore()
 const activeName = ref('doing')
 const doingTableLoading = ref(false)
-const doingTableData = taskStore.doingTask
-// const doneTableData = taskStore.doneTask
 
 const handleClick = (tab: TabsPaneContext, event: Event): void => {
   console.log(tab, event)
@@ -77,7 +75,7 @@ onMounted(() => {
         </el-row>
         <el-table
           v-loading="doingTableLoading"
-          :data="doingTableData"
+          :data="taskStore.doingTask"
           border
           :height="winStore.tableHeight - 40"
           style="width: 100%"
@@ -106,7 +104,27 @@ onMounted(() => {
           </el-table-column>
         </el-table>
       </el-tab-pane>
-      <el-tab-pane label="已完成" name="done">Config</el-tab-pane>
+      <el-tab-pane label="已完成" name="done">
+        <el-table
+          :data="taskStore.doneTask"
+          border
+          :height="winStore.tableHeight - 40"
+          style="width: 100%"
+        >
+          <el-table-column type="selection" width="45" />
+          <el-table-column prop="title" label="标题" show-overflow-tooltip width="400" />
+          <el-table-column prop="sizeFormat" label="文件大小" show-overflow-tooltip width="100" />
+          <el-table-column prop="savePath" label="保存路径" show-overflow-tooltip />
+          <el-table-column fixed="right" label="操作" width="200">
+            <template #default="scope">
+              <el-button type="danger" plain @click="handleDeleteTask(scope.row)">删除</el-button>
+              <el-button type="primary" plain @click="handleDeleteTask(scope.row)"
+                >打开文件</el-button
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
     </el-tabs>
   </el-card>
 </template>

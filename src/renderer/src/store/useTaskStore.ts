@@ -20,10 +20,14 @@ const useTaskStore = defineStore('taskStore', {
   persist: true,
   getters: {
     doingTask: (state) => {
-      return state.taskList
+      return _.filter(state.taskList, (item) => {
+        return item.status === '0' || item.status === '1' || item.status === '2'
+      })
     },
     doneTask: (state) => {
-      return state.taskList
+      return _.filter(state.taskList, (item) => {
+        return item.status === '3' || Number(item.status) < 0
+      })
     }
   },
   actions: {
@@ -66,7 +70,7 @@ const useTaskStore = defineStore('taskStore', {
             clearInterval(intervalId)
             intervalId = 0
           }
-        }, 2000)
+        }, 4000)
       }
     },
     deleteTask(id: string) {

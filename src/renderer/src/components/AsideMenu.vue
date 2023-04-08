@@ -7,7 +7,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { Document, Menu as IconMenu, Location, Expand, Fold } from '@element-plus/icons-vue'
+import { Document, Menu as IconMenu, Location, Expand, Fold, Sort } from '@element-plus/icons-vue'
+
 import useTaskStore from '../store/useTaskStore'
 
 const taskStore = useTaskStore()
@@ -43,7 +44,7 @@ const setWinSize = (): void => {
         <el-icon v-if="isCollapse"><Expand /></el-icon>
         <el-icon v-if="!isCollapse"><Fold /></el-icon>
       </el-menu-item>
-      <router-link v-slot="{ navigate }" to="/analyzeUrl" custom>
+      <router-link v-slot="{ navigate }" to="/videoList" custom>
         <el-menu-item index="2" @click="navigate()">
           <el-icon><IconMenu /></el-icon>
           <!-- 加入router-link后文字无法自动隐藏，使用if手动隐藏 -->
@@ -52,7 +53,7 @@ const setWinSize = (): void => {
       </router-link>
       <router-link v-slot="{ navigate }" to="/taskList" custom>
         <el-menu-item index="3" @click="navigate()">
-          <el-icon><IconMenu /></el-icon>
+          <el-icon><Sort /></el-icon>
           <!-- 加入router-link后文字无法自动隐藏，使用if手动隐藏 -->
           <div v-if="!isCollapse">
             任务列表

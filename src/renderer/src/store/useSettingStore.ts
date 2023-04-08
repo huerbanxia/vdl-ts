@@ -24,6 +24,7 @@ const useSettingStore = defineStore('settingStore', {
           authorization: ''
         },
         download: {
+          intervalTime: 4 * 1000,
           waitTime: 12 * 1000,
           maxTaskNum: 1,
           savePath: 'D:\\Download\\test'

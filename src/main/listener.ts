@@ -17,6 +17,8 @@ pool.on('error', (error) => {
 interface Params {
   subscribed?: boolean
   sort?: string
+  page?: number
+  limit?: number
 }
 
 // 主进程监听器统一注册
@@ -74,9 +76,11 @@ export default function registerListtener(win: BrowserWindow): void {
     } else {
       params.sort = data.sort
     }
+    params.page = data.currentPage - 1
+    params.limit = data.pageSize
     log.info(`获取视频列表 参数 `)
     log.info(params)
-    const res = await http.get('https://api.iwara.tv/videos?page=0&limit=24', { params })
+    const res = await http.get('https://api.iwara.tv/videos', { params })
     return res
   })
 
@@ -155,7 +159,8 @@ export default function registerListtener(win: BrowserWindow): void {
         const res = {
           taskId: result.taskId,
           process: result.process,
-          status: result.status
+          status: result.status,
+          savePath: result.savePath
         }
         wc.send('update-process', res)
       }

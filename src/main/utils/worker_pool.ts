@@ -67,7 +67,7 @@ class WorkerPool extends EventEmitter {
       if (worker[kTaskInfo]) {
         // 此处判断下载完成且worker[kTaskInfo]存在才进行下面的操作
         worker[kTaskInfo].callback(null, result)
-        if (result.process === 100 && result.status === '3') {
+        if (result.over) {
           // 如果成功：调用传递给`runTask`的回调，删除与Worker关联的`TaskInfo`，并再次将其标记为空闲。
           // 此处判断下载完成且worker[kTaskInfo]存在才进行下面的操作
           worker[kTaskInfo].done(null, result)
@@ -92,6 +92,7 @@ class WorkerPool extends EventEmitter {
   }
 
   runTask(taskData: TaskData, callback: CallbackFunction): void {
+    log.info(`当前空闲线程数${this.freeWorkers.length}`)
     if (this.freeWorkers.length === 0) {
       // 没有空闲线程，等待工作线程空闲。
       this.tasks.push({ taskData: taskData, callback })

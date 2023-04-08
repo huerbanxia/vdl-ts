@@ -5,7 +5,7 @@
  * AnalyzeUrl.vue
 -->
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import useWinStore from '../../store/useWinStore'
 import useTaskStore from '../../store/useTaskStore'
 import { ElMessage } from 'element-plus'
@@ -21,12 +21,18 @@ const isSubscribedDisable = ref(false)
 const tableRef = ref()
 const tableLoading = ref(true)
 const tableData = ref([])
+// 分页相关
+const total = ref(100)
+const currentPage = ref(1)
+const pageSize = ref(24)
 
 const loadData = (): void => {
   tableLoading.value = true
   const params = {
     sort: sort.value,
-    isSubscribed: isSubscribed.value
+    isSubscribed: isSubscribed.value,
+    currentPage: currentPage.value,
+    pageSize: pageSize.value
   }
   window.api
     .getVideoPageList(params)
@@ -46,6 +52,7 @@ const loadData = (): void => {
         }
       })
       tableData.value = res.results
+      total.value = res.count
       tableLoading.value = false
     })
     .catch((e) => {
@@ -112,6 +119,15 @@ const deleteData = (): void => {
 onMounted(() => {
   loadData()
 })
+
+watch(currentPage, (newVal, oldVal) => {
+  loadData()
+  console.log(newVal, oldVal)
+})
+watch(pageSize, (newVal, oldVal) => {
+  loadData()
+  console.log(newVal, oldVal)
+})
 </script>
 <template>
   <el-card class="container">
@@ -149,10 +165,9 @@ onMounted(() => {
         ></el-col
       >
     </el-row>
-    <div class="data-table">
+    <div v-loading="tableLoading" class="data-table">
       <el-table
         ref="tableRef"
-        v-loading="tableLoading"
         :data="tableData"
         :height="winStore.tableHeight - 20"
         :border="true"
@@ -180,7 +195,14 @@ onMounted(() => {
         />
       </el-table>
       <div class="pagination">
-        <el-pagination background layout="prev, pager, next" :total="1000" />
+        <el-pagination
+          v-model:current-page="currentPage"
+          v-model:page-size="pageSize"
+          background
+          :page-sizes="[24, 50]"
+          layout="sizes, prev, pager, next, jumper, ->, total"
+          :total="total"
+        />
       </div>
     </div>
   </el-card>

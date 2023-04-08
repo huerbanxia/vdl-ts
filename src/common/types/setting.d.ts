@@ -23,6 +23,8 @@ declare namespace common {
     }
     // 下载设置
     download: {
+      // 每几秒钟发送一个任务到解析线程
+      intervalTime: number
       // 解析下载链接等待时间
       waitTime: number
       // 同时下载任务数

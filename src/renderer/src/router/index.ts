@@ -1,20 +1,20 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import AnalyzeUrl from '@renderer/components/views/AnalyzeUrl.vue'
+import VideoList from '@renderer/components/views/VideoList.vue'
 
 const routes: Readonly<RouteRecordRaw[]> = [
   {
     path: '/',
-    redirect: '/analyzeUrl'
+    redirect: '/videoList'
   },
   // 使用别名方式 访问 / 或 /home 同一效果且url不会被替换
   // { path: '/', component: Home, alias: '/home' },
   {
-    path: '/analyzeUrl',
-    name: 'analyzeUrl',
+    path: '/videoList',
+    name: 'videoList',
     meta: {
       keepAlive: true //添加这个作为标志符，表明该页面需要保留状态
     },
-    component: AnalyzeUrl
+    component: VideoList
   },
   {
     path: '/versions',

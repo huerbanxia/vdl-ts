@@ -9,7 +9,6 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
-    AnalyzeUrl: typeof import('./src/components/views/AnalyzeUrl.vue')['default']
     AsideMenu: typeof import('./src/components/AsideMenu.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElButton: typeof import('element-plus/es')['ElButton']
@@ -38,6 +37,7 @@ declare module '@vue/runtime-core' {
     TaskList: typeof import('./src/components/views/TaskList.vue')['default']
     TitleBar: typeof import('./src/components/TitleBar.vue')['default']
     Versions: typeof import('./src/components/views/Versions.vue')['default']
+    VideoList: typeof import('./src/components/views/VideoList.vue')['default']
   }
   export interface ComponentCustomProperties {
     vLoading: typeof import('element-plus/es')['ElLoadingDirective']
