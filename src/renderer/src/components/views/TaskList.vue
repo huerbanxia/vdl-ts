@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { IpcRendererEvent } from 'electron'
 import type { TabsPaneContext } from 'element-plus'
 import useTaskStore from '../../store/useTaskStore'
 import useWinStore from '../../store/useWinStore'
@@ -22,19 +23,28 @@ const getStatusName = (status: string): string => {
   let statusName = ''
   switch (status) {
     case '0':
-      statusName = '正在等待'
+      statusName = '等待解析'
       break
     case '1':
-      statusName = '下载中'
+      statusName = '等待下载'
       break
     case '2':
-      statusName = '已完成'
+      statusName = '下载中'
       break
     case '3':
+      statusName = '下载完成'
+      break
+    case '-1':
       statusName = '出错'
       break
   }
   return statusName
+}
+
+const updateStoreProcess = (taskId: string, process: number, status: string): void => {
+  console.log(taskId, process, status)
+
+  taskStore.updataProcess(taskId, process, status)
 }
 
 onMounted(() => {
@@ -48,6 +58,9 @@ onMounted(() => {
   //     status: '1'
   //   })
   // }
+  window.api.updateProcess((_event: IpcRendererEvent, data: common.params.IUpdateProcessParam) => {
+    updateStoreProcess(data.taskId, data.process, data.status)
+  })
 })
 </script>
 

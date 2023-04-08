@@ -3,6 +3,7 @@ import { EventEmitter } from 'events'
 import { resolve } from 'path'
 import createWorker from './task_processor?nodeWorker'
 import { Worker } from 'node:worker_threads'
+import log from 'electron-log'
 
 const kTaskInfo = Symbol('kTaskInfo')
 const kWorkerFreedEvent = Symbol('kWorkerFreedEvent')
@@ -44,6 +45,8 @@ class WorkerPool extends EventEmitter {
     this.freeWorkers = []
     this.tasks = []
 
+    log.info(`初始化下载线程池大小为${this.numThreads}`)
+
     for (let i = 0; i < numThreads; i++) this.addNewWorker()
 
     // 每当发出 kWorkerFreedEvent 时，调度队列中待处理的下一个任务（如果有）。
@@ -58,12 +61,13 @@ class WorkerPool extends EventEmitter {
   addNewWorker(): void {
     // @ts-ignore 修改后的参数
     const worker = createWorker(resolve(__dirname, 'task_processor.js'))
+    log.info('创建子线程 线程id:', worker.threadId)
     worker.on('message', (result) => {
       // 获取到信息后调用回返回信息
       if (worker[kTaskInfo]) {
         // 此处判断下载完成且worker[kTaskInfo]存在才进行下面的操作
         worker[kTaskInfo].callback(null, result)
-        if (result.process === 100) {
+        if (result.process === 100 && result.status === '3') {
           // 如果成功：调用传递给`runTask`的回调，删除与Worker关联的`TaskInfo`，并再次将其标记为空闲。
           // 此处判断下载完成且worker[kTaskInfo]存在才进行下面的操作
           worker[kTaskInfo].done(null, result)
@@ -75,6 +79,7 @@ class WorkerPool extends EventEmitter {
     })
     worker.on('error', (err) => {
       // 如果发生未捕获的异常：调用传递给 `runTask` 并出现错误的回调。
+      log.error('error')
       if (worker[kTaskInfo]) worker[kTaskInfo].done(err, null)
       else this.emit('error', err)
       // 从列表中删除 Worker 并启动一个新的 Worker 来替换当前的 Worker。

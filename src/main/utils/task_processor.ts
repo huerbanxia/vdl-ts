@@ -1,62 +1,77 @@
 import { parentPort } from 'worker_threads'
 import fs from 'fs'
 import http from './http'
+import { AxiosResponse } from 'axios'
 import _ from 'lodash'
 import { resolve } from 'path'
 import { setting } from '../setting'
+import log from 'electron-log'
+import { Stream } from 'stream'
 
 parentPort?.on('message', (task) => {
-  const data = task.data
+  const data: common.model.Task = task.data
+  // log.info(data)
   const filepath = setting.download.savePath ?? __dirname
   if (!fs.existsSync(filepath)) {
+    log.info(`下载路径不存在 自动创建 ${filepath}`)
     fs.mkdirSync(filepath)
   }
-  if (data.list?.length !== 0) {
-    let video = _.find(data.list, { type: 'Source' })
+  let video = _.find(data.list, { type: 'Source' })
+  if (!video) {
+    video = _.find(data.list, { type: '540' })
     if (!video) {
-      video = _.find(data.list, { type: '540' })
+      video = _.find(data.list, { type: '360' })
       if (!video) {
-        video = _.find(data.list, { type: '360' })
-        if (!video) {
-          video = data.list[0]
-        }
+        video = data.list![0]
       }
     }
-    http
-      .get(video.downloadUrl, {
-        responseType: 'stream',
-        onDownloadProgress: (progressEvent) => {
-          const process = Math.round((progressEvent.loaded / progressEvent.total!) * 100)
-          // 将下载进度返回给回调函数
-          const result = {
-            status: true,
-            process
-          }
-          parentPort?.postMessage(result)
-        }
-      })
-      .then((res) => {
-        const filename =
-          data.author + ' - ' + data.title + ' [' + video.type + '] [' + data.id + '].mp4'
-        const mypath = resolve(filepath, filename)
-        const writer = fs.createWriteStream(mypath)
-        res.data.pipe(writer)
-      })
-      .catch((e) => {
+  }
+  // 文件名 作者+标题+清晰度+视频id+后缀
+  const fileName =
+    data.author + ' - ' + data.titleFormat + ' [' + video.type + '] [' + data.videoId + ']'
+  const tempPath = resolve(filepath, fileName + '.temp')
+  const realPath = resolve(filepath, fileName + '.mp4')
+  let statusCode = '2'
+  http
+    .get(video.url, {
+      responseType: 'stream',
+      onDownloadProgress: (progressEvent) => {
+        const process = Math.round((progressEvent.loaded / progressEvent.total!) * 100)
+        // 将下载进度返回给回调函数
         const result = {
-          status: false,
+          taskId: data.id,
+          status: statusCode,
           process
         }
         parentPort?.postMessage(result)
-        console.log(e)
+      }
+    })
+    .then((res: AxiosResponse) => {
+      const stream: Stream = res.data
+      stream.on('end', () => {
+        fs.renameSync(tempPath, realPath)
+        log.info(`下载完成 ${realPath}`)
+        const result = {
+          taskId: data.id,
+          status: '3',
+          process: 100
+        }
+        parentPort?.postMessage(result)
       })
-  } else {
-    console.error('未获取到下载数据')
-    // 向前端发送消息 获取下载进度失败
-    const result = {
-      status: false,
-      process
-    }
-    parentPort?.postMessage(result)
-  }
+      const writer = fs.createWriteStream(tempPath)
+      stream.pipe(writer)
+    })
+    .catch((error) => {
+      statusCode = '-1'
+      const result = {
+        taskId: data.id,
+        status: statusCode,
+        process
+      }
+      parentPort?.postMessage(result)
+      if (fs.existsSync(tempPath)) {
+        fs.rmSync(tempPath)
+      }
+      log.info(`下载失败 ${error}`)
+    })
 })

@@ -8,5 +8,12 @@ declare namespace common {
       fileId: string
       createdAt: string
     }
+
+    interface IUpdateProcessParam {
+      // 要更新的任务id
+      taskId: string
+      process: number
+      status: string
+    }
   }
 }

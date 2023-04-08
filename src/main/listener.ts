@@ -10,6 +10,10 @@ import log from 'electron-log'
 const poolSize = setting.download.maxTaskNum
 const pool = new WorkerPool(poolSize)
 
+pool.on('error', (error) => {
+  log.error(error)
+})
+
 interface Params {
   subscribed?: boolean
   sort?: string
@@ -65,13 +69,14 @@ export default function registerListtener(win: BrowserWindow): void {
     } else {
       params.sort = data.sort
     }
+    log.info(`获取视频列表 参数 `)
     log.info(params)
     const res = await http.get('https://api.iwara.tv/videos?page=0&limit=24', { params })
     return res
   })
 
-  const analyzeDownloadUrl = (item: common.params.IDownloadParam): void => {
-    const url = 'https://www.iwara.tv/video/' + item.id + '/' + item.slug
+  const analyzeDownloadUrl = (task: common.model.Task): void => {
+    const url = 'https://www.iwara.tv/video/' + task.videoId + '/' + task.slug
     const win = new BrowserWindow({
       width: 1280,
       height: 720,
@@ -85,7 +90,6 @@ export default function registerListtener(win: BrowserWindow): void {
       }
     })
     // win.webContents.openDevTools()
-
     // 判断是否需要代理
     if (setting.proxy) {
       const proxy = setting.proxy
@@ -108,7 +112,6 @@ export default function registerListtener(win: BrowserWindow): void {
         callback({ cancel: false })
       }
     })
-
     /**
      * 等待页面基本元素加载完成后
      * 延时等待所有元素加载完成后再进行下载链接的读取
@@ -117,40 +120,39 @@ export default function registerListtener(win: BrowserWindow): void {
      */
     win.webContents.on('did-finish-load', () => {
       setTimeout(() => {
-        win.webContents.send('on-did-finish-load', item)
+        win.webContents.send('on-did-finish-load', task)
         // 延时一秒关闭窗口
         setTimeout(() => {
           win.close()
         }, 1000)
       }, setting.download.waitTime)
     })
-
     win.loadURL(url)
   }
 
-  ipcMain.handle('on-download-video', (_e, data) => {
+  ipcMain.handle('on-download-video', (_e, data: common.model.Task) => {
+    log.info(`接收到消息`, data.titleFormat)
     analyzeDownloadUrl(data)
   })
 
   ipcMain.handle('on-download-videos', (_e, data) => {
-    data.forEach((item: common.params.IDownloadParam) => analyzeDownloadUrl(item))
+    data.forEach((item: common.model.Task) => analyzeDownloadUrl(item))
   })
 
   // event.sender.send 返回的消息必须用 on 监听
-  ipcMain.on('on-return-info-list', (e, data) => {
-    e.sender.send('show-msg', 'success', '下载信息解析成功 开始下载')
-    console.log('接收到下载信息 开始下载', data.list.length)
+  ipcMain.on('on-return-info-list', (_event, data: common.model.Task) => {
+    log.info('接收到下载信息 创建下载任务', data.list?.length)
+    // 更新任务显示状态到 等待下载
+    wc.send('update-process', { taskId: data.id, process: 0, status: '1' })
+    // 添加下载任务
     pool.runTask({ data }, (_err, result) => {
-      const res = {
-        id: data.id,
-        process: result.process,
-        status: result.status
-      }
-      if (result.status) {
+      if (result) {
+        const res = {
+          taskId: result.taskId,
+          process: result.process,
+          status: result.status
+        }
         wc.send('update-process', res)
-      } else {
-        wc.send('update-process', res)
-        e.sender.send('show-msg', 'error', '下载失败')
       }
     })
   })

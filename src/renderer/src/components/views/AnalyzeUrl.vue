@@ -85,11 +85,12 @@ const addTasks = (): void => {
     rows.forEach((item: common.model.Video) => {
       if (item.file) {
         const task: common.model.Task = {
-          id: Math.random().toString(),
+          id: crypto.randomUUID(),
           videoId: item.id,
           fileId: item.file.id,
           title: item.title,
           titleFormat: formatFileName(item.title, ' '),
+          slug: item.slug,
           author: item.user.name,
           size: item.file.size,
           sizeFormat: formatSize(item.file.size),
@@ -110,14 +111,14 @@ const addTasks = (): void => {
   }
 }
 
-const updateTableProcess = (id: string, process: number, status: boolean): void => {
-  tableData.value.forEach((item: common.model.Video) => {
-    if (item.id === id) {
-      item.process = process
-      item.status = status
-    }
-  })
-}
+// const updateTableProcess = (id: string, process: number, status: boolean): void => {
+//   tableData.value.forEach((item: common.model.Video) => {
+//     if (item.id === id) {
+//       item.process = process
+//       item.status = status
+//     }
+//   })
+// }
 
 const getColor = (row): string => {
   if (row.status) {
@@ -143,9 +144,9 @@ const deleteData = (): void => {
 onMounted(() => {
   loadData()
   // 注册下载进度侦听器
-  window.api.updateProcess((_e, data) => {
-    updateTableProcess(data.id, data.process, data.status)
-  })
+  // window.api.updateProcess((_e, data) => {
+  //   updateTableProcess(data.id, data.process, data.status)
+  // })
 })
 </script>
 <template>

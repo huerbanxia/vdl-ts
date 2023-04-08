@@ -11,6 +11,8 @@ declare namespace common {
       title: string
       // 去除特殊字符后的title
       titleFormat: string
+      // 标题别名
+      slug: string
       // 作者
       author: string
       // 文件大小
@@ -21,6 +23,8 @@ declare namespace common {
       process: number
       // 文件下载状态 0 等待中 1 正在下载 2 已完成
       status: string
+      // 下载链接数据
+      list?: DownloadData[]
     }
   }
 }

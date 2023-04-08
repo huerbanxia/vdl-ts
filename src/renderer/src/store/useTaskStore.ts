@@ -6,6 +6,8 @@ interface TaskState {
   taskList: common.model.Task[]
 }
 
+let intervalId = 0
+const waitList: common.model.Task[] = []
 // 窗口信息仓库
 const useTaskStore = defineStore('taskStore', {
   state: (): TaskState => {
@@ -29,6 +31,7 @@ const useTaskStore = defineStore('taskStore', {
       const index = _.findIndex(this.taskList, { fileId: task.fileId })
       if (index === -1) {
         this.taskList.push(task)
+        waitList.push(task)
         return true
       }
       return false
@@ -42,14 +45,28 @@ const useTaskStore = defineStore('taskStore', {
           }
         })
         if (successNum === tasks.length) {
+          this.sendTask()
           ElMessage.success(`成功添加${successNum}个下载任务 请到任务列表查看`)
         } else if (successNum < tasks.length && successNum > 0) {
+          this.sendTask()
           ElMessage.success(
             `成功添加${successNum}个下载任务 跳过重复任务${tasks.length - successNum}个`
           )
         } else {
           ElMessage.warning(`所选任务已存在！`)
         }
+      }
+    },
+    sendTask() {
+      if (intervalId === 0) {
+        intervalId = window.setInterval(() => {
+          if (waitList.length > 0) {
+            window.api.downloadVideo(waitList.pop())
+          } else {
+            clearInterval(intervalId)
+            intervalId = 0
+          }
+        }, 2000)
       }
     },
     deleteTask(id: string) {
@@ -61,6 +78,14 @@ const useTaskStore = defineStore('taskStore', {
           grouping: true
         })
       }
+    },
+    updataProcess(taskId: string, process: number, status: string) {
+      this.taskList.forEach((item) => {
+        if (taskId == item.id) {
+          item.process = process
+          item.status = status
+        }
+      })
     }
   }
 })

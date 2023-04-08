@@ -16,7 +16,7 @@ const defaultSetting: common.AppSetting = {
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJjNDI1ODNhLTI5NGQtNDI1Ny04ZGZmLTMzMDc0MDljNjc5ZCIsInR5cGUiOiJyZWZyZXNoX3Rva2VuIiwiaXNzIjoiaXdhcmEiLCJpYXQiOjE2ODAyNjcwODEsImV4cCI6MTY4Mjg1OTA4MX0.8cn1GGJkOAmaI6DMr7RnGgWR0LeJ_G_XcIuGVcW4Owk'
   },
   download: {
-    waitTime: 5 * 1000,
+    waitTime: 12 * 1000,
     maxTaskNum: 1,
     savePath: 'D:\\Download\\test'
   }
