@@ -27,6 +27,8 @@ declare namespace common {
       list?: DownloadData[]
       // 保存路径
       savePath?: string
+      // 重试次数
+      retryNum: number
     }
   }
 }

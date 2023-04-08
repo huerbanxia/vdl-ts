@@ -133,7 +133,7 @@ export default function registerListtener(win: BrowserWindow): void {
         // 延时一秒关闭窗口
         setTimeout(() => {
           win.close()
-        }, 1000)
+        }, 4000)
       }, setting.download.waitTime)
     })
     win.loadURL(url)
@@ -144,8 +144,15 @@ export default function registerListtener(win: BrowserWindow): void {
     analyzeDownloadUrl(data)
   })
 
-  ipcMain.handle('on-download-videos', (_e, data) => {
-    data.forEach((item: common.model.Task) => analyzeDownloadUrl(item))
+  // 监听解析失败事件 再次解析
+  ipcMain.on('on-download-video', (_event, data: common.model.Task) => {
+    log.info(`接收到失败消息 ${data.titleFormat} 当前重试次数${data.retryNum}`)
+    if (data.retryNum < 2) {
+      log.info(`再次尝试解析 ${data.titleFormat}`)
+      analyzeDownloadUrl(data)
+    } else {
+      log.info(`放弃解析 ${data.titleFormat}`)
+    }
   })
 
   // event.sender.send 返回的消息必须用 on 监听

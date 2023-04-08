@@ -90,7 +90,8 @@ const addTasks = (): void => {
           size: item.file.size,
           sizeFormat: formatSize(item.file.size),
           process: 0,
-          status: '0'
+          status: '0',
+          retryNum: 0
         }
         data.push(task)
       } else {
