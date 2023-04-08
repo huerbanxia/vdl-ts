@@ -10,6 +10,8 @@ declare namespace common {
       createdAtFormat: string
       user: User
       file: File
+      sizeFormat: string
+      source: string
     }
   }
 }

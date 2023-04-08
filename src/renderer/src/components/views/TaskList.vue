@@ -41,25 +41,28 @@ const getStatusName = (status: string): string => {
   return statusName
 }
 
-const updateStoreProcess = (taskId: string, process: number, status: string): void => {
-  console.log(taskId, process, status)
+const updateStoreProcess = (
+  taskId: string,
+  process: number,
+  status: string,
+  savePath: string
+): void => {
+  taskStore.updataProcess(taskId, process, status, savePath)
+}
 
-  taskStore.updataProcess(taskId, process, status)
+const getColor = (row: common.model.Task): string => {
+  if (Number(row.status) >= 0) {
+    if (row.process === 100) {
+      return '#5cb87a'
+    }
+    return '#1989fa'
+  }
+  return '#E06202'
 }
 
 onMounted(() => {
-  // taskStore.$reset()
-  // for (let i = 0; i < 10; i++) {
-  //   taskStore.addTask({
-  //     id: Math.random().toString(),
-  //     filename: '测试',
-  //     size: '200',
-  //     process: 50,
-  //     status: '1'
-  //   })
-  // }
   window.api.updateProcess((_event: IpcRendererEvent, data: common.params.IUpdateProcessParam) => {
-    updateStoreProcess(data.taskId, data.process, data.status)
+    updateStoreProcess(data.taskId, data.process, data.status, data.savePath)
   })
 })
 </script>
@@ -70,6 +73,7 @@ onMounted(() => {
       <el-tab-pane label="正在下载" name="doing">
         <el-row class="button-group">
           <el-button type="danger">批量删除</el-button>
+          <el-button type="primary">打开下载路径</el-button>
         </el-row>
         <el-table
           v-loading="doingTableLoading"
@@ -88,7 +92,11 @@ onMounted(() => {
           </el-table-column>
           <el-table-column prop="process" label="下载进度">
             <template #default="scope">
-              <el-progress :percentage="scope.row.process" :stroke-width="10" />
+              <el-progress
+                :percentage="scope.row.process"
+                :stroke-width="10"
+                :color="getColor(scope.row)"
+              />
             </template>
           </el-table-column>
           <el-table-column fixed="right" label="操作" width="100">

@@ -11,7 +11,7 @@ import { Stream } from 'stream'
 parentPort?.on('message', (task) => {
   const data: common.model.Task = task.data
   // log.info(data)
-  const filepath = setting.download.savePath ?? __dirname
+  const filepath = setting.download!.savePath ?? __dirname
   if (!fs.existsSync(filepath)) {
     log.info(`下载路径不存在 自动创建 ${filepath}`)
     fs.mkdirSync(filepath)
@@ -36,8 +36,12 @@ parentPort?.on('message', (task) => {
     .get(video.url, {
       responseType: 'stream',
       onDownloadProgress: (progressEvent) => {
-        const process = Math.round((progressEvent.loaded / progressEvent.total!) * 100)
+        // const process = Math.round((progressEvent.loaded / progressEvent.total!) * 100)
+        const process: string = ((progressEvent.loaded / progressEvent.total!) * 100).toFixed(2)
         // 将下载进度返回给回调函数
+        if (progressEvent.loaded === progressEvent.total) {
+          statusCode = '3'
+        }
         const result = {
           taskId: data.id,
           status: statusCode,
@@ -54,7 +58,8 @@ parentPort?.on('message', (task) => {
         const result = {
           taskId: data.id,
           status: '3',
-          process: 100
+          process: '100.00',
+          savePath: realPath
         }
         parentPort?.postMessage(result)
       })

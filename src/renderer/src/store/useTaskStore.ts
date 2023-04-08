@@ -79,11 +79,14 @@ const useTaskStore = defineStore('taskStore', {
         })
       }
     },
-    updataProcess(taskId: string, process: number, status: string) {
+    updataProcess(taskId: string, process: number, status: string, savePath: string) {
       this.taskList.forEach((item) => {
         if (taskId == item.id) {
           item.process = process
           item.status = status
+          if (savePath) {
+            item.savePath = savePath
+          }
         }
       })
     }

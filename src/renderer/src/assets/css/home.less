@@ -12,42 +12,42 @@
 }
 
 .el-aside {
-  background-color: #545c64;
-  color: #333;
   text-align: center;
   line-height: 200px;
   overflow: hidden;
 }
 
 .el-main {
-  background-color: #cccccc;
   padding: 10px;
   overflow: hidden;
 }
 
+@expand-width: 150px;
+@fold-width: 64px;
+
 .aside-expand {
-  width: 15%;
+  width: @expand-width;
   animation: changeStyleExpand 0.5s;
 }
 @keyframes changeStyleExpand {
   0% {
-    width: 5%;
+    width: @fold-width;
   }
   100% {
-    width: 15%;
+    width: @expand-width;
   }
 }
 
 .aside-fold {
-  width: 5%;
+  width: @fold-width;
   animation: changeStyleFold 0.5s;
 }
 @keyframes changeStyleFold {
   0% {
-    width: 15%;
+    width: @expand-width;
   }
   100% {
-    width: 5%;
+    width: @fold-width;
   }
 }
 

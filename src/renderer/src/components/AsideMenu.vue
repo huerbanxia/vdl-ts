@@ -44,13 +44,6 @@ const setWinSize = (): void => {
         <el-icon v-if="!isCollapse"><Fold /></el-icon>
       </el-menu-item>
       <router-link v-slot="{ navigate }" to="/analyzeUrl" custom>
-        <el-menu-item index="1" @click="navigate()">
-          <el-icon><IconMenu /></el-icon>
-          <!-- 加入router-link后文字无法自动隐藏，使用if手动隐藏 -->
-          <div v-if="!isCollapse">视频解析</div>
-        </el-menu-item>
-      </router-link>
-      <router-link v-slot="{ navigate }" to="/analyzeUrl" custom>
         <el-menu-item index="2" @click="navigate()">
           <el-icon><IconMenu /></el-icon>
           <!-- 加入router-link后文字无法自动隐藏，使用if手动隐藏 -->

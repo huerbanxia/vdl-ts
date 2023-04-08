@@ -14,6 +14,7 @@ declare namespace common {
       taskId: string
       process: number
       status: string
+      savePath: string
     }
   }
 }

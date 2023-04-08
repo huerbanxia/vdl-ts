@@ -36,6 +36,9 @@ const api = {
   login(): void {
     ipcRenderer.invoke('on-login')
   },
+  getSetting(): Promise<common.AppSetting> {
+    return ipcRenderer.invoke('on-get-setting')
+  },
   testPool(): void {
     ipcRenderer.invoke('on-test-pool')
   }

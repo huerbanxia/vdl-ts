@@ -25,6 +25,8 @@ declare namespace common {
       status: string
       // 下载链接数据
       list?: DownloadData[]
+      // 保存路径
+      savePath?: string
     }
   }
 }

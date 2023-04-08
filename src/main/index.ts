@@ -10,7 +10,9 @@ import registerListtener from './listener'
 function createWindow(): void {
   log.info('创建新窗口')
   const options: BrowserWindowConstructorOptions = {
-    ...defaultSetting,
+    ...defaultSetting.state,
+    minWidth: 1280,
+    minHeight: 720,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),

@@ -38,6 +38,12 @@ const loadData = (): void => {
         // 添加进度状态数据
         item.status = true
         item.createdAtFormat = formatDateTime(item.createdAt)
+        if (item.file) {
+          item.sizeFormat = formatSize(item.file.size)
+          item.source = 'iwara'
+        } else {
+          item.source = 'youtube'
+        }
       })
       tableData.value = res.results
       tableLoading.value = false
@@ -58,24 +64,6 @@ const handleSortSelectChange = (val: string): void => {
   }
   loadData()
 }
-
-// 下载按钮点击事件
-// const download = (): void => {
-//   const rows = tableRef.value.getSelectionRows()
-//   const data: common.params.IDownloadParam[] = []
-//   rows.forEach((item: common.model.Video) => {
-//     const info = {
-//       id: item.id,
-//       title: item.title,
-//       slug: item.slug,
-//       author: item.user.name,
-//       fileId: item.file.id,
-//       createdAt: item.createdAt.substring(0, 10).replaceAll('-', '%2F')
-//     }
-//     data.push(info)
-//   })
-//   // window.api.downloadVideo(data)
-// }
 
 const addTasks = (): void => {
   const rows = tableRef.value.getSelectionRows()
@@ -111,25 +99,6 @@ const addTasks = (): void => {
   }
 }
 
-// const updateTableProcess = (id: string, process: number, status: boolean): void => {
-//   tableData.value.forEach((item: common.model.Video) => {
-//     if (item.id === id) {
-//       item.process = process
-//       item.status = status
-//     }
-//   })
-// }
-
-const getColor = (row): string => {
-  if (row.status) {
-    if (row.process === 100) {
-      return '#5cb87a'
-    }
-    return '#1989fa'
-  }
-  return '#E06202'
-}
-
 // 手动登录按钮
 const login = (): void => {
   window.api.login()
@@ -137,16 +106,11 @@ const login = (): void => {
 
 const deleteData = (): void => {
   window.api.testPool()
-  console.log(132)
   ElMessage.success('删除成功')
 }
 
 onMounted(() => {
   loadData()
-  // 注册下载进度侦听器
-  // window.api.updateProcess((_e, data) => {
-  //   updateTableProcess(data.id, data.process, data.status)
-  // })
 })
 </script>
 <template>
@@ -190,14 +154,22 @@ onMounted(() => {
         ref="tableRef"
         v-loading="tableLoading"
         :data="tableData"
-        :height="winStore.tableHeight"
+        :height="winStore.tableHeight - 20"
         :border="true"
         stripe
       >
         <el-table-column type="selection" width="45" />
         <el-table-column type="index" width="45" />
-        <el-table-column prop="title" label="标题" width="180" show-overflow-tooltip />
+        <el-table-column prop="title" label="标题" show-overflow-tooltip />
         <el-table-column prop="user.name" label="作者" width="100" show-overflow-tooltip />
+        <el-table-column prop="source" label="源" width="85" show-overflow-tooltip />
+        <el-table-column
+          prop="sizeFormat"
+          sortable
+          label="文件大小"
+          width="110"
+          show-overflow-tooltip
+        />
         <el-table-column prop="numLikes" sortable label="Likes" width="90" />
         <el-table-column
           prop="createdAtFormat"
@@ -206,17 +178,10 @@ onMounted(() => {
           sortable
           show-overflow-tooltip
         />
-        <el-table-column label="下载进度">
-          <template #default="scope">
-            <el-progress
-              :percentage="scope.row.process"
-              :stroke-width="20"
-              :text-inside="false"
-              :color="getColor(scope.row)"
-            />
-          </template>
-        </el-table-column>
       </el-table>
+      <div class="pagination">
+        <el-pagination background layout="prev, pager, next" :total="1000" />
+      </div>
     </div>
   </el-card>
 </template>
@@ -228,5 +193,8 @@ onMounted(() => {
 }
 .data-table {
   margin-top: 15px;
+}
+.pagination {
+  margin-top: 10px;
 }
 </style>
