@@ -22,7 +22,7 @@ function createWindow(): void {
     // https://github.com/WICG/window-controls-overlay/blob/main/explainer.md#javascript-apis
     // https://github.com/WICG/window-controls-overlay/blob/main/explainer.md#css-environment-variables
     titleBarOverlay: {
-      color: '#2f3241',
+      color: '#38383f',
       symbolColor: '#74b1be',
       height: 30
     },

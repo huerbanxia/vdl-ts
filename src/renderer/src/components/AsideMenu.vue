@@ -33,7 +33,7 @@ const setWinSize = (): void => {
 <template>
   <div class="container">
     <el-menu
-      background-color="#545c64"
+      background-color="#222226"
       text-color="#fff"
       active-text-color="#ffd04b"
       default-active="3"
