@@ -4,7 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import log from 'electron-log'
 import defaultSetting from '../common/defaultSetting'
-import { setting } from './setting'
+import { saveSetting, setting } from './setting'
 import registerListtener from './listener'
 // import db from './db/sqlite3db'
 
@@ -103,6 +103,8 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   // log.info('关闭数据库')
   // db.close()
+  // 保存窗口状态数据
+  saveSetting()
   if (process.platform !== 'darwin') {
     log.info('应用退出')
     app.quit()
