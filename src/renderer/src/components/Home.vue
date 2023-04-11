@@ -43,7 +43,7 @@ const changeCollapse = (collapse: boolean): void => {
       <el-main>
         <!-- vue3.0配置 -->
         <router-view v-slot="{ Component }">
-          <transition name="bounce">
+          <transition name="el-fade-in-linear">
             <keep-alive><component :is="Component" /></keep-alive>
           </transition>
         </router-view>

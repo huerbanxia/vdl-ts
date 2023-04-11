@@ -5,20 +5,20 @@
  * AnalyzeUrl.vue
 -->
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+import { ref, reactive, onMounted, watch } from 'vue'
 import useWinStore from '../../store/useWinStore'
 import useTaskStore from '../../store/useTaskStore'
 import { ElMessage } from 'element-plus'
+import { ArrowDown, ArrowUp } from '@element-plus/icons-vue'
 import { formatFileName, formatSize, formatDateTime } from '../../utils/format'
 
 const winStore = useWinStore()
 const taskStore = useTaskStore()
 
-const word = ref('')
-const sort = ref('date')
-const isSubscribed = ref('1')
 const isSubscribedDisable = ref(false)
+const isAdvancedSearchShow = ref(false)
 const tableRef = ref()
+const tableReduce = ref(20)
 const tableLoading = ref(true)
 const tableData = ref([])
 // 分页相关
@@ -26,11 +26,21 @@ const total = ref(100)
 const currentPage = ref(1)
 const pageSize = ref(24)
 
+const searchForm = reactive({
+  keywords: '',
+  isSubscribed: '1',
+  sort: 'date'
+})
+
+const handleSearchBtn = (): void => {
+  loadData()
+}
+
 const loadData = (): void => {
   tableLoading.value = true
   const params = {
-    sort: sort.value,
-    isSubscribed: isSubscribed.value,
+    sort: searchForm.sort,
+    isSubscribed: searchForm.isSubscribed,
     currentPage: currentPage.value,
     pageSize: pageSize.value
   }
@@ -67,9 +77,8 @@ const handleSortSelectChange = (val: string): void => {
     isSubscribedDisable.value = false
   } else {
     isSubscribedDisable.value = true
-    isSubscribed.value = '0'
+    searchForm.isSubscribed = '0'
   }
-  loadData()
 }
 
 const addTasks = (): void => {
@@ -107,14 +116,23 @@ const addTasks = (): void => {
   }
 }
 
-// 手动登录按钮
-const login = (): void => {
-  window.api.login()
-}
+// // 手动登录按钮
+// const login = (): void => {
+//   window.api.login()
+// }
 
-const deleteData = (): void => {
-  window.api.testPool()
-  ElMessage.success('删除成功')
+// const deleteData = (): void => {
+//   window.api.testPool()
+//   ElMessage.success('删除成功')
+// }
+
+const handleAdvancedSearchBtn = (): void => {
+  isAdvancedSearchShow.value = !isAdvancedSearchShow.value
+  if (isAdvancedSearchShow.value) {
+    tableReduce.value = 75
+  } else {
+    tableReduce.value = 20
+  }
 }
 
 onMounted(() => {
@@ -132,12 +150,12 @@ watch(pageSize, (newVal, oldVal) => {
 </script>
 <template>
   <el-card class="container">
-    <el-row :gutter="4">
+    <!-- <el-row :gutter="4">
       <el-col :span="2"
         ><el-button type="success" style="width: 100%" @click="login">登录</el-button></el-col
       >
-      <el-col :span="9"><el-input v-model="word" placeholder="请输入关键字" /></el-col>
-      <el-col :span="4"
+      <el-col :span="1"><el-input v-model="word" placeholder="请输入关键字" /></el-col>
+      <el-col :span="3"
         ><el-select
           v-model="isSubscribed"
           placeholder="是否为关注列表"
@@ -146,14 +164,15 @@ watch(pageSize, (newVal, oldVal) => {
           <el-option label="是" value="1" />
           <el-option label="否" value="0" /> </el-select
       ></el-col>
-      <el-col :span="3"
-        ><el-select v-model="sort" placeholder="排序" @change="handleSortSelectChange">
+      <el-col :span="4">
+        <el-select v-model="sort" placeholder="排序" @change="handleSortSelectChange">
           <el-option label="日期" value="date" />
           <el-option label="趋势" value="trending" />
           <el-option label="受欢迎" value="popularity" />
           <el-option label="views" value="views" />
           <el-option label="likes" value="likes" /> </el-select
       ></el-col>
+
       <el-col :span="2"><el-button style="width: 100%" @click="loadData">刷新</el-button></el-col>
       <el-col :span="2"
         ><el-button type="primary" plain style="width: 100%" @click="addTasks()"
@@ -165,12 +184,59 @@ watch(pageSize, (newVal, oldVal) => {
           >删除</el-button
         ></el-col
       >
-    </el-row>
+    </el-row> -->
+
+    <el-form :inline="true" :model="searchForm" class="demo-form-inline">
+      <el-form-item label="搜索关键词" style="width: 70%">
+        <el-input v-model="searchForm.keywords" placeholder="搜索关键词" />
+      </el-form-item>
+
+      <el-form-item style="margin-left: auto; margin-right: 0">
+        <el-button type="primary" plain @click="handleAdvancedSearchBtn()"
+          >高级搜索
+          <el-icon v-show="!isAdvancedSearchShow" class="el-icon--right"><ArrowDown /></el-icon>
+          <el-icon v-show="isAdvancedSearchShow" class="el-icon--right"><ArrowUp /></el-icon>
+        </el-button>
+        <el-button type="primary" plain @click="handleSearchBtn">搜索</el-button>
+        <el-button type="primary" plain @click="addTasks()">下载</el-button>
+      </el-form-item>
+    </el-form>
+
+    <el-collapse-transition>
+      <div v-show="isAdvancedSearchShow">
+        <el-form :inline="true" :model="searchForm" class="advanced-search">
+          <el-form-item label="是否为关注列表">
+            <el-select
+              v-model="searchForm.isSubscribed"
+              placeholder="是否为关注列表"
+              :disabled="isSubscribedDisable"
+            >
+              <el-option label="是" value="1" />
+              <el-option label="否" value="0" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="排序规则">
+            <el-select
+              v-model="searchForm.sort"
+              placeholder="排序规则"
+              @change="handleSortSelectChange"
+            >
+              <el-option label="日期" value="date" />
+              <el-option label="趋势" value="trending" />
+              <el-option label="受欢迎" value="popularity" />
+              <el-option label="views" value="views" />
+              <el-option label="likes" value="likes" />
+            </el-select>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-collapse-transition>
+
     <div v-loading="tableLoading" class="data-table">
       <el-table
         ref="tableRef"
         :data="tableData"
-        :height="winStore.tableHeight - 20"
+        :height="winStore.tableHeight - tableReduce"
         :border="true"
         stripe
       >
@@ -214,10 +280,17 @@ watch(pageSize, (newVal, oldVal) => {
   margin: 0;
   height: 100%;
 }
-.data-table {
-  margin-top: 15px;
-}
+// .data-table {
+//   margin-top: 15px;
+// }
 .pagination {
   margin-top: 10px;
+}
+
+.demo-form-inline {
+  display: flex;
+}
+.advanced-search {
+  display: flex;
 }
 </style>
