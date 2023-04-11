@@ -1,6 +1,6 @@
 import { parentPort } from 'worker_threads'
 import fs from 'fs'
-import http from './http'
+import { http } from './http'
 import { AxiosResponse } from 'axios'
 import _ from 'lodash'
 import { resolve } from 'path'

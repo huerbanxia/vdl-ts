@@ -13,7 +13,7 @@ declare namespace common {
       y?: number
     }
     // 代理设置
-    proxy?: {
+    proxy: {
       // 协议
       protocol: string
       // 主机

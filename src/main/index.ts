@@ -4,8 +4,9 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import log from 'electron-log'
 import defaultSetting from '../common/defaultSetting'
-import { setting, saveSetting } from './setting'
+import { setting } from './setting'
 import registerListtener from './listener'
+// import db from './db/sqlite3db'
 
 function createWindow(): void {
   log.info('创建新窗口')
@@ -100,9 +101,10 @@ app.whenReady().then(() => {
 
 // 当关闭所有窗口时退出应用 macOS 除外
 app.on('window-all-closed', () => {
-  saveSetting()
-  log.info('应用退出')
+  // log.info('关闭数据库')
+  // db.close()
   if (process.platform !== 'darwin') {
+    log.info('应用退出')
     app.quit()
   }
 })

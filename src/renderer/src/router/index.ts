@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import VideoList from '@renderer/components/views/VideoList.vue'
 
 const routes: Readonly<RouteRecordRaw[]> = [
   {
@@ -14,7 +13,8 @@ const routes: Readonly<RouteRecordRaw[]> = [
     meta: {
       keepAlive: true //添加这个作为标志符，表明该页面需要保留状态
     },
-    component: VideoList
+    // 路由懒加载
+    component: () => import('@renderer/components/views/VideoList.vue')
   },
   {
     path: '/versions',
@@ -27,6 +27,12 @@ const routes: Readonly<RouteRecordRaw[]> = [
     name: 'taskList',
     // 路由懒加载
     component: () => import('@renderer/components/views/TaskList.vue')
+  },
+  {
+    path: '/config',
+    name: 'config',
+    // 路由懒加载
+    component: () => import('@renderer/components/views/Config.vue')
   }
 ]
 

@@ -1,8 +1,8 @@
 import { ipcMain, BrowserWindow, session } from 'electron'
 import { join } from 'path'
-import http from './utils/http'
+import { http, resetAxios } from './utils/http'
 import WorkerPool from './utils/worker_pool'
-import { setting } from './setting'
+import { setting, saveSetting, resetToDefault } from './setting'
 import defaultSetting from '../common/defaultSetting'
 import log from 'electron-log'
 
@@ -26,6 +26,21 @@ export default function registerListtener(win: BrowserWindow): void {
   const wc = win.webContents
   // 处理获取设置事件
   ipcMain.handle('on-get-setting', () => {
+    return setting
+  })
+
+  // 处理保存设置事件
+  ipcMain.handle('on-save-setting', (_event, userSetting: common.AppSetting): boolean => {
+    saveSetting(userSetting)
+    resetAxios()
+    return true
+  })
+
+  // 处理保存设置事件
+  ipcMain.handle('on-reset-setting', (): common.AppSetting => {
+    resetToDefault()
+    resetAxios()
+    log.info(setting)
     return setting
   })
 

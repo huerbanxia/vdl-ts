@@ -8,22 +8,22 @@
 import { ref, onMounted } from 'vue'
 import AsideMenu from './AsideMenu.vue'
 import TitleBar from './TitleBar.vue'
-import { ElMessage } from 'element-plus'
+// import { ElMessage } from 'element-plus'
 
 /**
  * type: 'success' | 'warning' | 'info' | 'error'
  */
-const showMessage = (type, msg): void => {
-  ElMessage({
-    message: msg,
-    type: type
-  })
-}
+// const showMessage = (type, msg): void => {
+//   ElMessage({
+//     message: msg,
+//     type: type
+//   })
+// }
 onMounted(() => {
   // 注册全局消息钩子
-  window.api.showMessage((_event, type: string, msg: string) => {
-    showMessage(type, msg)
-  })
+  // window.api.showMessage((_event, type: string, msg: string) => {
+  //   showMessage(type, msg)
+  // })
 })
 
 const isCollapse = ref(false)

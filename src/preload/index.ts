@@ -39,6 +39,12 @@ const api = {
   getSetting(): Promise<common.AppSetting> {
     return ipcRenderer.invoke('on-get-setting')
   },
+  saveSetting(setting: common.AppSetting): Promise<boolean> {
+    return ipcRenderer.invoke('on-save-setting', setting)
+  },
+  resetSetting(): Promise<common.AppSetting> {
+    return ipcRenderer.invoke('on-reset-setting')
+  },
   testPool(): void {
     ipcRenderer.invoke('on-test-pool')
   }

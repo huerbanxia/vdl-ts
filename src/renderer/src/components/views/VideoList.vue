@@ -5,7 +5,7 @@
  * AnalyzeUrl.vue
 -->
 <script setup lang="ts">
-import { ref, reactive, onMounted, watch } from 'vue'
+import { ref, reactive, onMounted, onActivated, watch } from 'vue'
 import useWinStore from '../../store/useWinStore'
 import useTaskStore from '../../store/useTaskStore'
 import { ElMessage } from 'element-plus'
@@ -137,6 +137,12 @@ const handleAdvancedSearchBtn = (): void => {
 
 onMounted(() => {
   loadData()
+})
+// 被keep-alive缓存的组件被激活时调用
+onActivated(() => {
+  if (tableData.value.length === 0) {
+    loadData()
+  }
 })
 
 watch(currentPage, (newVal, oldVal) => {

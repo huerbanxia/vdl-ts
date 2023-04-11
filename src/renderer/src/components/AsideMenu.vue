@@ -23,7 +23,7 @@ const changeCollapse = (): void => {
 }
 onMounted(() => {
   // 初始化访问根路径
-  router.push('/taskList')
+  router.push('/config')
   // 默认不折叠菜单
   isCollapse.value = false
 })
@@ -68,7 +68,7 @@ const setWinSize = (): void => {
           </span>
         </template>
       </el-menu-item>
-      <el-menu-item index="/versions">
+      <el-menu-item index="/config">
         <el-icon><IconMenu /></el-icon>
         <template #title>设置</template>
       </el-menu-item>
