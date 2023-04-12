@@ -41,6 +41,11 @@ const handleSelectSavePathBtn = (): void => {
   })
 }
 
+// 手动登录按钮
+const handleLoginBtn = (): void => {
+  window.api.login()
+}
+
 onMounted(() => {})
 </script>
 <template>
@@ -64,7 +69,7 @@ onMounted(() => {})
                 <el-input v-model="configForm.axios.authorization" />
               </el-form-item>
               <el-form-item>
-                <el-button plain>登录</el-button>
+                <el-button plain @click="handleLoginBtn">登录</el-button>
               </el-form-item>
             </el-collapse-item>
             <el-collapse-item name="1">

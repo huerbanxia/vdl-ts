@@ -12,9 +12,11 @@ import { ElMessage } from 'element-plus'
 import { ArrowDown, ArrowUp } from '@element-plus/icons-vue'
 import { formatFileName, formatSize, formatDateTime } from '../../utils/format'
 
+// 仓库初始化
 const winStore = useWinStore()
 const taskStore = useTaskStore()
 
+// 相关变量
 const isSubscribedDisable = ref(false)
 const isAdvancedSearchShow = ref(false)
 const tableRef = ref()
@@ -25,17 +27,19 @@ const tableData = ref([])
 const total = ref(100)
 const currentPage = ref(1)
 const pageSize = ref(24)
-
+// 搜索
 const searchForm = reactive({
   keywords: '',
   isSubscribed: '1',
   sort: 'date'
 })
 
+// 搜索按钮
 const handleSearchBtn = (): void => {
   loadData()
 }
 
+// 加载表格数据
 const loadData = (): void => {
   tableLoading.value = true
   const params = {
@@ -44,6 +48,7 @@ const loadData = (): void => {
     currentPage: currentPage.value,
     pageSize: pageSize.value
   }
+  // 请求主进程获取数据
   window.api
     .getVideoPageList(params)
     .then((res) => {
@@ -88,6 +93,7 @@ const handleSortSelectChange = (val: string): void => {
   }
 }
 
+// 下载按钮
 const addTasks = (): void => {
   const rows = tableRef.value.getSelectionRows()
   if (rows.length > 0) {
@@ -122,16 +128,6 @@ const addTasks = (): void => {
     ElMessage.warning('未选择数据！')
   }
 }
-
-// // 手动登录按钮
-// const login = (): void => {
-//   window.api.login()
-// }
-
-// const deleteData = (): void => {
-//   window.api.testPool()
-//   ElMessage.success('删除成功')
-// }
 
 const handleAdvancedSearchBtn = (): void => {
   isAdvancedSearchShow.value = !isAdvancedSearchShow.value

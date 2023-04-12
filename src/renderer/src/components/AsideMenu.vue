@@ -51,7 +51,7 @@ const setWinSize = (): void => {
       background-color="#222226"
       text-color="#fff"
       active-text-color="#ffd04b"
-      default-active="/taskList"
+      default-active="/config"
       :collapse="isCollapse"
       :router="true"
     >
