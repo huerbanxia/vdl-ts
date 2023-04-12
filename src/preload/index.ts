@@ -45,8 +45,8 @@ const api = {
   resetSetting(): Promise<common.AppSetting> {
     return ipcRenderer.invoke('on-reset-setting')
   },
-  testPool(): void {
-    ipcRenderer.invoke('on-test-pool')
+  openSaveDialog(): Promise<Electron.OpenDialogReturnValue> {
+    return ipcRenderer.invoke('on-open-save-dialog')
   }
 }
 

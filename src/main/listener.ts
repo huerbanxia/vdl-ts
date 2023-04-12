@@ -1,5 +1,6 @@
-import { ipcMain, BrowserWindow, session } from 'electron'
+import { ipcMain, BrowserWindow, session, dialog, app } from 'electron'
 import { join } from 'path'
+import fs from 'node:fs'
 import { http, resetAxios } from './utils/http'
 import WorkerPool from './utils/worker_pool'
 import { setting, saveSetting, resetToDefault } from './setting'
@@ -42,6 +43,17 @@ export default function registerListtener(win: BrowserWindow): void {
     resetAxios()
     log.info(setting)
     return setting
+  })
+
+  // 处理打开保存窗口事件
+  ipcMain.handle('on-open-save-dialog', async (): Promise<Electron.OpenDialogReturnValue> => {
+    const saveFilePath = app.getAppPath() + '\\download\\'
+    const result = await dialog.showOpenDialog({
+      title: '选择保存位置',
+      defaultPath: saveFilePath,
+      properties: ['createDirectory', 'openDirectory']
+    })
+    return result
   })
 
   // 处理指定窗口大小事件

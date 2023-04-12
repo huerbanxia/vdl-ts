@@ -38,6 +38,7 @@ module.exports = {
   ],
   globals: {
     // 注册全局关键字 common
-    common: true
+    common: true,
+    Electron: true
   }
 }

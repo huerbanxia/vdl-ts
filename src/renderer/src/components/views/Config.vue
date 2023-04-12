@@ -33,6 +33,14 @@ const handleResetConfig = (): void => {
   dialogVisible.value = false
 }
 
+const handleSelectSavePathBtn = (): void => {
+  window.api.openSaveDialog().then((result: Electron.OpenDialogReturnValue) => {
+    if (!result.canceled && result.filePaths.length > 0) {
+      configForm.value.download.savePath = result.filePaths[0]
+    }
+  })
+}
+
 onMounted(() => {})
 </script>
 <template>
@@ -64,7 +72,14 @@ onMounted(() => {})
                 <h2>代理</h2>
               </template>
               <el-form-item label="协议" style="margin-top: 10px">
-                <el-input v-model="configForm.proxy.protocol" />
+                <el-select
+                  v-model="configForm.proxy.protocol"
+                  placeholder="请选择代理协议"
+                  style="width: 100%"
+                >
+                  <el-option label="http" value="http" />
+                  <el-option label="https" value="https" />
+                </el-select>
               </el-form-item>
               <el-form-item label="主机">
                 <el-input v-model="configForm.proxy.host" />
@@ -79,12 +94,18 @@ onMounted(() => {})
                 <h2>下载</h2>
               </template>
               <el-form-item label="保存路径" style="margin-top: 10px">
-                <el-input v-model="configForm.download.savePath" />
+                <el-button plain style="width: 25%" @click="handleSelectSavePathBtn"
+                  >选择路径</el-button
+                >
+                <el-input
+                  v-model="configForm.download.savePath"
+                  style="width: 73%; margin-right: 2%"
+                />
               </el-form-item>
-              <el-form-item>
-                <el-button plain>选择路径</el-button>
+              <!-- <el-form-item>
+                <el-button plain @click="handleSelectSavePathBtn">选择路径</el-button>
                 <el-button plain style="margin-right: 10px">重建数据库缓存</el-button>
-              </el-form-item>
+              </el-form-item> -->
               <el-form-item label="同时下载任务数">
                 <el-input v-model="configForm.download.maxTaskNum" />
               </el-form-item>
@@ -119,7 +140,7 @@ onMounted(() => {})
     </el-row>
 
     <el-dialog v-model="dialogVisible" title="确认" width="30%">
-      <span> 此操作无法恢复！确认要重置设置吗?</span>
+      <span> 此操作无法恢复！确认要重置设置吗? </span>
       <template #footer>
         <span class="dialog-footer">
           <el-button plain @click="dialogVisible = false"> 取消 </el-button>
@@ -131,23 +152,5 @@ onMounted(() => {})
 </template>
 
 <style lang="less" scoped>
-.container {
-  height: 100%;
-  overflow: auto;
-}
-
-:deep(.el-form-item__content) {
-  flex-direction: row-reverse;
-}
-
-.button-group {
-  position: fixed;
-  top: 60px;
-  right: 60px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  height: 100px;
-  // border: 1px solid red;
-}
+@import '@renderer/assets/css/config.less';
 </style>
