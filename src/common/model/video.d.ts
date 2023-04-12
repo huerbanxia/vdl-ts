@@ -12,6 +12,8 @@ declare namespace common {
       file: File
       sizeFormat: string
       source: string
+      imgUrl: string
+      previewSrcList: string[]
     }
   }
 }

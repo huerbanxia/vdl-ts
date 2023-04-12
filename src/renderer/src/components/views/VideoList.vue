@@ -47,8 +47,15 @@ const loadData = (): void => {
   window.api
     .getVideoPageList(params)
     .then((res) => {
-      // https://i.iwara.tv/image/thumbnail/id/thumbnail-00.jpg
       res.results.forEach((item: common.model.Video) => {
+        item.imgUrl = `https://i.iwara.tv/image/thumbnail/${item.file.id}/thumbnail-01.jpg`
+        const previewSrcList: string[] = []
+        for (let i = 0; i < 10; i++) {
+          previewSrcList.push(
+            `https://i.iwara.tv/image/thumbnail/${item.file.id}/thumbnail-0${i}.jpg`
+          )
+        }
+        item.previewSrcList = previewSrcList
         // 添加进度数据
         item.process = 0
         // 添加进度状态数据
@@ -156,42 +163,6 @@ watch(pageSize, (newVal, oldVal) => {
 </script>
 <template>
   <el-card class="container">
-    <!-- <el-row :gutter="4">
-      <el-col :span="2"
-        ><el-button type="success" style="width: 100%" @click="login">登录</el-button></el-col
-      >
-      <el-col :span="1"><el-input v-model="word" placeholder="请输入关键字" /></el-col>
-      <el-col :span="3"
-        ><el-select
-          v-model="isSubscribed"
-          placeholder="是否为关注列表"
-          :disabled="isSubscribedDisable"
-        >
-          <el-option label="是" value="1" />
-          <el-option label="否" value="0" /> </el-select
-      ></el-col>
-      <el-col :span="4">
-        <el-select v-model="sort" placeholder="排序" @change="handleSortSelectChange">
-          <el-option label="日期" value="date" />
-          <el-option label="趋势" value="trending" />
-          <el-option label="受欢迎" value="popularity" />
-          <el-option label="views" value="views" />
-          <el-option label="likes" value="likes" /> </el-select
-      ></el-col>
-
-      <el-col :span="2"><el-button style="width: 100%" @click="loadData">刷新</el-button></el-col>
-      <el-col :span="2"
-        ><el-button type="primary" plain style="width: 100%" @click="addTasks()"
-          >下载</el-button
-        ></el-col
-      >
-      <el-col :span="2"
-        ><el-button style="width: 100%" type="danger" plain @click="deleteData()"
-          >删除</el-button
-        ></el-col
-      >
-    </el-row> -->
-
     <el-form :inline="true" :model="searchForm" class="demo-form-inline">
       <el-form-item label="搜索关键词" style="width: 70%">
         <el-input v-model="searchForm.keywords" placeholder="搜索关键词" />
@@ -248,6 +219,17 @@ watch(pageSize, (newVal, oldVal) => {
       >
         <el-table-column type="selection" width="45" />
         <el-table-column type="index" width="45" />
+        <el-table-column label="预览" width="200">
+          <template #default="scope">
+            <el-image
+              :src="scope.row.imgUrl"
+              fit="contain"
+              :preview-src-list="scope.row.previewSrcList"
+              preview-teleported
+              lazy
+            />
+          </template>
+        </el-table-column>
         <el-table-column prop="title" label="标题" show-overflow-tooltip />
         <el-table-column prop="user.name" label="作者" width="100" show-overflow-tooltip />
         <el-table-column prop="source" label="源" width="85" show-overflow-tooltip />
@@ -286,9 +268,6 @@ watch(pageSize, (newVal, oldVal) => {
   margin: 0;
   height: 100%;
 }
-// .data-table {
-//   margin-top: 15px;
-// }
 .pagination {
   margin-top: 10px;
 }

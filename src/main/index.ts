@@ -71,6 +71,16 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
+  // 判断是否需要代理
+  if (setting.proxy) {
+    const proxy = setting.proxy
+    const proxyUrl = proxy.protocol + '://' + proxy.host + ':' + proxy.port
+    mainWindow.webContents.session.setProxy({
+      mode: 'fixed_servers',
+      proxyRules: proxyUrl
+    })
+  }
+
   // 开发环境加载本地url 生产环境加载静态文件
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
