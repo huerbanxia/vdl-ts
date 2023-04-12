@@ -23,7 +23,7 @@ const changeCollapse = (): void => {
 }
 onMounted(() => {
   // 初始化访问根路径
-  router.push('/config')
+  router.push('/videoListPic')
   // 默认不折叠菜单
   isCollapse.value = false
 })
@@ -51,11 +51,15 @@ const setWinSize = (): void => {
       background-color="#222226"
       text-color="#fff"
       active-text-color="#ffd04b"
-      default-active="/config"
+      default-active="/videoListPic"
       :collapse="isCollapse"
       :router="true"
     >
       <el-menu-item index="/videoList">
+        <el-icon><Document /></el-icon>
+        <template #title> 视频表格 </template>
+      </el-menu-item>
+      <el-menu-item index="/videoListPic">
         <el-icon><Document /></el-icon>
         <template #title> 视频列表 </template>
       </el-menu-item>

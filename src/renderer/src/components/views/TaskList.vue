@@ -33,7 +33,10 @@ const getStatusName = (status: string): string => {
       statusName = '下载完成'
       break
     case '-1':
-      statusName = '出错'
+      statusName = '解析失败'
+      break
+    case '-2':
+      statusName = '下载失败'
       break
   }
   return statusName

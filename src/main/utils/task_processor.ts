@@ -68,7 +68,7 @@ parentPort?.on('message', (task) => {
       stream.pipe(writer)
     })
     .catch((error) => {
-      statusCode = '-1'
+      statusCode = '-2'
       const result = {
         taskId: data.id,
         status: statusCode,

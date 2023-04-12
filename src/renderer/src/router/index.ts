@@ -10,28 +10,27 @@ const routes: Readonly<RouteRecordRaw[]> = [
   {
     path: '/videoList',
     name: 'videoList',
-    meta: {
-      keepAlive: true //添加这个作为标志符，表明该页面需要保留状态
-    },
     // 路由懒加载
     component: () => import('@renderer/components/views/VideoList.vue')
   },
   {
+    path: '/videoListPic',
+    name: 'videoListPic',
+    component: () => import('@renderer/components/views/VideoListPic.vue')
+  },
+  {
     path: '/versions',
     name: 'versions',
-    // 路由懒加载
     component: () => import('@renderer/components/views/Versions.vue')
   },
   {
     path: '/taskList',
     name: 'taskList',
-    // 路由懒加载
     component: () => import('@renderer/components/views/TaskList.vue')
   },
   {
     path: '/config',
     name: 'config',
-    // 路由懒加载
     component: () => import('@renderer/components/views/Config.vue')
   }
 ]

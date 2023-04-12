@@ -1,32 +1,32 @@
 <!--
- * 我的订阅页面下载组件
+ * 视频列表 照片墙模式
  * @author: zgy
- * @since: 2023-03-29
- * VideoList.vue
+ * @since: 2023-04-12
+ * VideoListPic.vue
 -->
-<script setup lang="ts">
-import { ref, reactive, onMounted, watch } from 'vue'
-import useWinStore from '../../store/useWinStore'
-import useTaskStore from '../../store/useTaskStore'
+<script lang="ts" setup>
+import { ref, reactive, onMounted, watch, Ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { ArrowDown, ArrowUp } from '@element-plus/icons-vue'
+// import useWinStore from '../../store/useWinStore'
+import useTaskStore from '../../store/useTaskStore'
+import { ArrowDown, ArrowUp, Picture as IconPicture } from '@element-plus/icons-vue'
 import { formatFileName, formatSize, formatDateTime } from '../../utils/format'
 
 // 仓库初始化
-const winStore = useWinStore()
+// const winStore = useWinStore()
 const taskStore = useTaskStore()
 
-// 相关变量
-const isSubscribedDisable = ref(false)
-const isAdvancedSearchShow = ref(false)
-const tableRef = ref()
-const tableReduce = ref(20)
-const tableLoading = ref(true)
-const tableData = ref([])
 // 分页相关
 const total = ref(100)
 const currentPage = ref(1)
 const pageSize = ref(24)
+
+const tableData: Ref<Array<common.model.Video>> = ref([])
+const isAdvancedSearchShow = ref(false)
+const tableRef = ref()
+const isSubscribedDisable = ref(false)
+const listLoading = ref(false)
+
 // 搜索
 const searchForm = reactive({
   keywords: '',
@@ -34,20 +34,16 @@ const searchForm = reactive({
   sort: 'date'
 })
 
-// 搜索按钮
-const handleSearchBtn = (): void => {
-  loadData()
-}
-
 // 加载表格数据
 const loadData = (): void => {
-  tableLoading.value = true
+  listLoading.value = true
   const params = {
     sort: searchForm.sort,
     isSubscribed: searchForm.isSubscribed,
     currentPage: currentPage.value,
     pageSize: pageSize.value
   }
+
   // 请求主进程获取数据
   window.api
     .getVideoPageList(params)
@@ -79,22 +75,14 @@ const loadData = (): void => {
       })
       tableData.value = res.results
       total.value = res.count
-      tableLoading.value = false
     })
     .catch((e) => {
       console.log(e)
-      tableLoading.value = false
       ElMessage.error('数据加载失败 请检查网络连接')
     })
-}
-
-const handleSortSelectChange = (val: string): void => {
-  if (val === 'date') {
-    isSubscribedDisable.value = false
-  } else {
-    isSubscribedDisable.value = true
-    searchForm.isSubscribed = '0'
-  }
+    .finally(() => {
+      listLoading.value = false
+    })
 }
 
 // 下载按钮
@@ -133,25 +121,23 @@ const addTasks = (): void => {
   }
 }
 
-const handleAdvancedSearchBtn = (): void => {
-  isAdvancedSearchShow.value = !isAdvancedSearchShow.value
-  if (isAdvancedSearchShow.value) {
-    tableReduce.value = 75
+// 搜索按钮
+const handleSearchBtn = (): void => {
+  loadData()
+}
+
+const handleSortSelectChange = (val: string): void => {
+  if (val === 'date') {
+    isSubscribedDisable.value = false
   } else {
-    tableReduce.value = 20
+    isSubscribedDisable.value = true
+    searchForm.isSubscribed = '0'
   }
 }
 
 onMounted(() => {
   loadData()
 })
-// // 被keep-alive缓存的组件被激活时调用
-// onActivated(() => {
-//   if (tableData.value.length === 0) {
-//     loadData()
-//   }
-// })
-
 watch(currentPage, (newVal, oldVal) => {
   loadData()
   console.log(newVal, oldVal)
@@ -163,13 +149,13 @@ watch(pageSize, (newVal, oldVal) => {
 </script>
 <template>
   <el-card class="container">
+    <!-- 搜索部分 -->
     <el-form :inline="true" :model="searchForm" class="search-form">
       <el-form-item label="搜索关键词" style="width: 70%">
         <el-input v-model="searchForm.keywords" placeholder="搜索关键词" />
       </el-form-item>
-
       <el-form-item style="margin-left: auto; margin-right: 0">
-        <el-button type="primary" plain @click="handleAdvancedSearchBtn()"
+        <el-button type="primary" plain @click="isAdvancedSearchShow = !isAdvancedSearchShow"
           >高级搜索
           <el-icon v-show="!isAdvancedSearchShow" class="el-icon--right"><ArrowDown /></el-icon>
           <el-icon v-show="isAdvancedSearchShow" class="el-icon--right"><ArrowUp /></el-icon>
@@ -177,79 +163,70 @@ watch(pageSize, (newVal, oldVal) => {
         <el-button type="primary" plain @click="handleSearchBtn">搜索</el-button>
         <el-button type="primary" plain @click="addTasks()">下载</el-button>
       </el-form-item>
+      <!-- 高级搜索部分 -->
+      <el-collapse-transition>
+        <div v-show="isAdvancedSearchShow">
+          <el-form :inline="true" :model="searchForm" class="advanced-search">
+            <el-form-item label="是否为关注列表">
+              <el-select
+                v-model="searchForm.isSubscribed"
+                placeholder="是否为关注列表"
+                :disabled="isSubscribedDisable"
+              >
+                <el-option label="是" value="1" />
+                <el-option label="否" value="0" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="排序规则">
+              <el-select
+                v-model="searchForm.sort"
+                placeholder="排序规则"
+                @change="handleSortSelectChange"
+              >
+                <el-option label="日期" value="date" />
+                <el-option label="趋势" value="trending" />
+                <el-option label="受欢迎" value="popularity" />
+                <el-option label="views" value="views" />
+                <el-option label="likes" value="likes" />
+              </el-select>
+            </el-form-item>
+          </el-form>
+        </div>
+      </el-collapse-transition>
     </el-form>
 
-    <el-collapse-transition>
-      <div v-show="isAdvancedSearchShow">
-        <el-form :inline="true" :model="searchForm" class="advanced-search">
-          <el-form-item label="是否为关注列表">
-            <el-select
-              v-model="searchForm.isSubscribed"
-              placeholder="是否为关注列表"
-              :disabled="isSubscribedDisable"
-            >
-              <el-option label="是" value="1" />
-              <el-option label="否" value="0" />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="排序规则">
-            <el-select
-              v-model="searchForm.sort"
-              placeholder="排序规则"
-              @change="handleSortSelectChange"
-            >
-              <el-option label="日期" value="date" />
-              <el-option label="趋势" value="trending" />
-              <el-option label="受欢迎" value="popularity" />
-              <el-option label="views" value="views" />
-              <el-option label="likes" value="likes" />
-            </el-select>
-          </el-form-item>
-        </el-form>
+    <!-- 视频列表 -->
+    <div v-loading="listLoading" class="video-list">
+      <!-- 页首分页 -->
+      <div v-if="tableData.length > 0" class="pagination-top">
+        <el-pagination
+          v-model:current-page="currentPage"
+          v-model:page-size="pageSize"
+          background
+          :page-sizes="[24, 50]"
+          layout="sizes, prev, pager, next, jumper, ->, total"
+          :total="total"
+        />
       </div>
-    </el-collapse-transition>
+      <!-- 视频主体部分 -->
+      <el-row :gutter="30">
+        <el-col v-for="(item, index) in tableData" :key="index" :span="6">
+          <el-carousel indicator-position="none" height="160px" :autoplay="false">
+            <el-carousel-item v-for="(img, imgIndex) in item.previewSrcList" :key="imgIndex">
+              <!-- 图片尺寸 220*160 -->
+              <el-image :src="img" fit="contain" style="width: 100%">
+                <template #error>
+                  <el-icon><icon-picture /></el-icon>
+                </template>
+              </el-image>
+            </el-carousel-item>
+          </el-carousel>
+          {{ item.title }}
+        </el-col>
+      </el-row>
 
-    <div v-loading="tableLoading" class="data-table">
-      <el-table
-        ref="tableRef"
-        :data="tableData"
-        :height="winStore.tableHeight - tableReduce"
-        :border="true"
-        stripe
-      >
-        <el-table-column type="selection" width="45" />
-        <!-- <el-table-column type="index" width="45" /> -->
-        <el-table-column label="预览" width="200">
-          <template #default="scope">
-            <el-image
-              :src="scope.row.imgUrl"
-              fit="contain"
-              :preview-src-list="scope.row.previewSrcList"
-              preview-teleported
-              lazy
-            />
-          </template>
-        </el-table-column>
-        <el-table-column prop="title" label="标题" show-overflow-tooltip />
-        <el-table-column prop="user.name" label="作者" width="100" show-overflow-tooltip />
-        <el-table-column prop="source" label="源" width="85" show-overflow-tooltip />
-        <el-table-column
-          prop="sizeFormat"
-          sortable
-          label="文件大小"
-          width="110"
-          show-overflow-tooltip
-        />
-        <el-table-column prop="numLikes" sortable label="Likes" width="90" />
-        <el-table-column
-          prop="createdAtFormat"
-          label="创建时间"
-          width="165"
-          sortable
-          show-overflow-tooltip
-        />
-      </el-table>
-      <div class="pagination">
+      <!-- 页脚分页 -->
+      <div v-if="tableData.length > 0" class="pagination-bottom">
         <el-pagination
           v-model:current-page="currentPage"
           v-model:page-size="pageSize"
@@ -263,19 +240,17 @@ watch(pageSize, (newVal, oldVal) => {
   </el-card>
 </template>
 
-<style lang="less" scoped>
+<style scoped>
 .container {
   margin: 0;
   height: 100%;
-}
-.pagination {
-  margin-top: 10px;
+  overflow: auto;
 }
 
-.search-form {
-  display: flex;
+.pagination-top {
+  margin-bottom: 10px;
 }
-.advanced-search {
-  display: flex;
+.pagination-bottom {
+  margin-top: 10px;
 }
 </style>
