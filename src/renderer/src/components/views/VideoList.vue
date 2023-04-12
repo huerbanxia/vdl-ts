@@ -214,7 +214,7 @@ watch(pageSize, (newVal, oldVal) => {
         stripe
       >
         <el-table-column type="selection" width="45" />
-        <el-table-column type="index" width="45" />
+        <!-- <el-table-column type="index" width="45" /> -->
         <el-table-column label="预览" width="200">
           <template #default="scope">
             <el-image
