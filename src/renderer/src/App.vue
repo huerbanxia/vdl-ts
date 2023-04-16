@@ -11,10 +11,10 @@ const winReSize = (): void => {
   // 存储到store
   winstore.setValues(window.innerWidth, window.innerHeight)
   // 修改主窗口的大小
-  const mainContiner = document.getElementById('main-continer')
-  if (mainContiner) {
-    mainContiner.style.height = window.innerHeight + 'px'
-    mainContiner.style.width = window.innerWidth + 'px'
+  const mainContainer = document.getElementById('main-container')
+  if (mainContainer) {
+    mainContainer.style.height = window.innerHeight + 'px'
+    mainContainer.style.width = window.innerWidth + 'px'
   }
 }
 // 组件创建添加窗口变化事件
@@ -29,7 +29,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div id="main-continer" height="720px">
+  <div id="main-container" style="height: 720px">
     <Home></Home>
   </div>
 </template>

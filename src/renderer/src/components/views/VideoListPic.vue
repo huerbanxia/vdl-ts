@@ -8,7 +8,6 @@
 import { ref, reactive, onMounted, watch, Ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import _ from 'lodash'
-// import useWinStore from '../../store/useWinStore'
 import useTaskStore from '../../store/useTaskStore'
 import { ArrowDown, ArrowUp, Picture as IconPicture } from '@element-plus/icons-vue'
 import { formatFileName, formatSize, formatDateTime } from '../../utils/format'
@@ -61,7 +60,6 @@ const loadData = (): void => {
         if (item.file) {
           item.sizeFormat = formatSize(item.file.size)
           item.source = 'iwara'
-
           item.imgUrl = `https://i.iwara.tv/image/thumbnail/${item.file.id}/thumbnail-00.jpg`
           const previewSrcList: string[] = []
           for (let i = 0; i <= 11; i++) {
@@ -155,6 +153,7 @@ onMounted(() => {
 })
 watch(currentPage, (newVal, oldVal) => {
   loadData()
+  document.getElementById('videoListPic')!.scrollTop = 1
   console.log(newVal, oldVal)
 })
 watch(pageSize, (newVal, oldVal) => {
@@ -224,15 +223,16 @@ watch(pageSize, (newVal, oldVal) => {
         </div>
       </div>
     </el-affix>
-
-    <!-- 视频列表 -->
+    <!-- 回到顶部 -->
+    <el-backtop target="#videoListPic" :right="100" :bottom="60" :visibility-height="10" />
     <div v-loading="listLoading" class="video-list">
       <!-- 视频主体部分 -->
       <el-checkbox v-model="isAll" label="全选" />
       <el-row :gutter="30">
         <el-col v-for="(item, index) in tableData" :key="index" :span="6">
           <div @click="handlePicItemClick(index)">
-            <el-checkbox v-model="item.isCheck" label="勾选下载" />
+            <!-- @click.stop="() => {}"阻止冒泡事件导致执行两次无法选中 -->
+            <el-checkbox v-model="item.isCheck" label="勾选下载" @click.stop="() => {}" />
             <el-carousel
               indicator-position="none"
               height="160px"
@@ -278,7 +278,6 @@ watch(pageSize, (newVal, oldVal) => {
 //   padding-top: 0px;
 // }
 .affix {
-  // background-color: #1d1e1f;
   background-color: #ffffff;
 }
 .affix-no-padding {

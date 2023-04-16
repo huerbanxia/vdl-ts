@@ -16,7 +16,7 @@ interface Params {
 }
 
 // 主进程监听器统一注册
-export default function registerListtener(win: BrowserWindow): void {
+export default function registerListener(win: BrowserWindow): void {
   const wc = win.webContents
   // 处理获取设置事件
   ipcMain.handle('on-get-setting', () => {

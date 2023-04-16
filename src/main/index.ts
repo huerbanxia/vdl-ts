@@ -5,7 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import log from 'electron-log'
 import defaultSetting from '../common/defaultSetting'
 import { saveSetting, setting } from './setting'
-import registerListtener from './listener'
+import registerListener from './listener'
 // import db from './db/sqlite3db'
 
 function createWindow(): void {
@@ -89,7 +89,7 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
   // 注册主进程监听事件
-  registerListtener(mainWindow)
+  registerListener(mainWindow)
 }
 
 app.whenReady().then(() => {
