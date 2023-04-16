@@ -134,6 +134,9 @@ const handleSortSelectChange = (val: string): void => {
     searchForm.isSubscribed = '0'
   }
 }
+const handlePicItemClick = (index: number): void => {
+  tableData[index].isCheck = !tableData[index].isCheck
+}
 
 onMounted(() => {
   loadData()
@@ -211,17 +214,25 @@ watch(pageSize, (newVal, oldVal) => {
       <!-- 视频主体部分 -->
       <el-row :gutter="30">
         <el-col v-for="(item, index) in tableData" :key="index" :span="6">
-          <el-carousel indicator-position="none" height="160px" :autoplay="false">
-            <el-carousel-item v-for="(img, imgIndex) in item.previewSrcList" :key="imgIndex">
-              <!-- 图片尺寸 220*160 -->
-              <el-image :src="img" fit="contain" style="width: 100%">
-                <template #error>
-                  <el-icon><icon-picture /></el-icon>
-                </template>
-              </el-image>
-            </el-carousel-item>
-          </el-carousel>
-          {{ item.title }}
+          <div @click="handlePicItemClick(index)">
+            <el-checkbox v-model="item.isCheck" label="勾选下载" />
+            <el-carousel
+              indicator-position="none"
+              height="160px"
+              :autoplay="false"
+              style="cursor: pointer"
+            >
+              <el-carousel-item v-for="(img, imgIndex) in item.previewSrcList" :key="imgIndex">
+                <!-- 图片尺寸 220*160 -->
+                <el-image :src="img" fit="contain" style="width: 100%">
+                  <template #error>
+                    <el-icon><icon-picture /></el-icon>
+                  </template>
+                </el-image>
+              </el-carousel-item>
+            </el-carousel>
+            {{ item.title }}
+          </div>
         </el-col>
       </el-row>
 

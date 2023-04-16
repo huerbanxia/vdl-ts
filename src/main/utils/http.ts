@@ -1,5 +1,6 @@
 import axios, { CreateAxiosDefaults, AxiosInstance } from 'axios'
-// import { getDefaultHeaders } from './header'
+import log from 'electron-log'
+import { getDefaultHeaders } from './header'
 import { setting } from '../setting'
 
 const createAxios = (): AxiosInstance => {
@@ -20,14 +21,15 @@ const createAxios = (): AxiosInstance => {
   // 请求拦截
   service.interceptors.request.use(
     (config) => {
+      log.info('使用代理设置发起请求', config.proxy)
+      config.headers = getDefaultHeaders()
       if (setting.axios.authorization) {
-        // config.headers = getDefaultHeaders()
         config.headers['Authorization'] = 'Bearer ' + setting.axios.authorization
       }
       return config
     },
     (error) => {
-      console.log(error) // for debug
+      log.error(error) // for debug
       return Promise.reject(error)
     }
   )
@@ -37,7 +39,7 @@ const createAxios = (): AxiosInstance => {
       const headers = response.headers
       const res = response.data
       if (response.status !== 200) {
-        console.log('接口信息报错1', res.message)
+        log.error('接口信息报错1', res.message)
         return Promise.reject(new Error(res.message || 'Error'))
       } else if (headers['content-type'] === 'application/json; charset=utf-8') {
         // 返回值为json则直接吧data返回
@@ -48,7 +50,7 @@ const createAxios = (): AxiosInstance => {
       }
     },
     (error) => {
-      console.log('接口信息报错2' + error)
+      log.error('接口信息报错2', error)
       return Promise.reject(error)
     }
   )

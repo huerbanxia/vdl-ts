@@ -14,6 +14,7 @@ declare namespace common {
       source: string
       imgUrl: string
       previewSrcList: string[]
+      isCheck: boolean
     }
   }
 }
