@@ -29,6 +29,10 @@ declare namespace common {
       savePath?: string
       // 重试次数
       retryNum: number
+      // 添加任务时间
+      addTime?: number
+      // 完成任务时间（包括出错）
+      completeTime?: number
     }
   }
 }

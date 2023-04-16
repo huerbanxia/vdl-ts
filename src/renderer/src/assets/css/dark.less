@@ -1,4 +1,18 @@
 html.dark {
   /* 自定义深色背景颜色 */
-  --el-bg-color: #2b1e63;
+  // --el-bg-color: #2b1e63;
+
+  /*
+  在暗黑模式下显示图片，部分会比较亮，刺眼。可以使用CSS滤镜，设置图片的亮度、饱和度
+  除图片外，可将以图片为背景图的容器加上类 dark-img-bg 或其它css选择器
+  */
+  img,
+  .dark-img-bg {
+    filter: brightness(0.8) saturate(1.25);
+  }
+
+  // 视频列表页面的
+  .affix-dark-bg {
+    background-color: #1d1e1f;
+  }
 }

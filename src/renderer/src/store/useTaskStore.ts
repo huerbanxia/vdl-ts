@@ -20,13 +20,25 @@ const useTaskStore = defineStore('taskStore', {
   persist: true,
   getters: {
     doingTask: (state) => {
-      return _.filter(state.taskList, (item) => {
+      const filterList = _.filter(state.taskList, (item) => {
         return item.status === '0' || item.status === '1' || item.status === '2'
+      })
+      return _.sortBy(filterList, (item) => {
+        if (item.addTime) {
+          return item.addTime
+        }
+        return 0
       })
     },
     doneTask: (state) => {
-      return _.filter(state.taskList, (item) => {
+      const filterList = _.filter(state.taskList, (item) => {
         return item.status === '3' || Number(item.status) < 0
+      })
+      return _.sortBy(filterList, (item) => {
+        if (item.completeTime) {
+          return -item.completeTime
+        }
+        return 0
       })
     }
   },
@@ -34,6 +46,7 @@ const useTaskStore = defineStore('taskStore', {
     addTask(task: common.model.Task) {
       const index = _.findIndex(this.taskList, { fileId: task.fileId })
       if (index === -1) {
+        task.addTime = Date.now()
         this.taskList.push(task)
         waitList.push(task)
         return true
@@ -90,6 +103,7 @@ const useTaskStore = defineStore('taskStore', {
           item.status = status
           if (savePath) {
             item.savePath = savePath
+            item.completeTime = Date.now()
           }
         }
       })
