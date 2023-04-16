@@ -30,6 +30,7 @@ interface Task {
 
 interface TaskData {
   data: object
+  setting: common.AppSetting
 }
 
 class WorkerPool extends EventEmitter {

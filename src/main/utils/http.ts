@@ -1,7 +1,9 @@
 import axios, { CreateAxiosDefaults, AxiosInstance } from 'axios'
+// import { getDefaultHeaders } from './header'
 import { setting } from '../setting'
 
 const createAxios = (): AxiosInstance => {
+  // 准备axios实例配置
   const options: CreateAxiosDefaults = {
     timeout: setting.axios.timeout
   }
@@ -13,13 +15,13 @@ const createAxios = (): AxiosInstance => {
       port: setting.proxy.port
     }
   }
-
   const service = axios.create(options)
 
   // 请求拦截
   service.interceptors.request.use(
     (config) => {
       if (setting.axios.authorization) {
+        // config.headers = getDefaultHeaders()
         config.headers['Authorization'] = 'Bearer ' + setting.axios.authorization
       }
       return config

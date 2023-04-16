@@ -7,8 +7,7 @@ import defaultSetting from '../common/defaultSetting'
 import log from 'electron-log'
 
 // 初始化下载线程池
-const poolSize = setting.download.maxTaskNum
-const pool = new WorkerPool(poolSize)
+const pool = new WorkerPool(setting.download.maxTaskNum)
 interface Params {
   subscribed?: boolean
   sort?: string
@@ -134,7 +133,7 @@ export default function registerListtener(win: BrowserWindow): void {
     // 更新任务显示状态到 等待下载
     wc.send('update-process', { taskId: data.id, process: 0, status: '1' })
     // 添加下载任务
-    pool.runTask({ data }, (_err, result) => {
+    pool.runTask({ data, setting }, (_err, result) => {
       if (result) {
         const res = {
           taskId: result.taskId,

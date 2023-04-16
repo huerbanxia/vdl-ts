@@ -1,15 +1,14 @@
-import { parentPort } from 'worker_threads'
+import { parentPort } from 'node:worker_threads'
+import stream from 'node:stream'
 import fs from 'fs'
-import { http } from './http'
-import { AxiosResponse } from 'axios'
+import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
 import _ from 'lodash'
 import { resolve } from 'path'
-import { setting } from '../setting'
 import log from 'electron-log'
-import { Stream } from 'stream'
 
-parentPort?.on('message', (task) => {
+parentPort!.on('message', (task) => {
   const data: common.model.Task = task.data
+  const setting: common.AppSetting = task.setting
   // log.info(data)
   const filepath = setting.download!.savePath ?? __dirname
   if (!fs.existsSync(filepath)) {
@@ -32,26 +31,37 @@ parentPort?.on('message', (task) => {
   const tempPath = resolve(filepath, fileName + '.temp')
   const realPath = resolve(filepath, fileName + '.mp4')
   let statusCode = '2'
-  http
-    .get(video.url, {
-      responseType: 'stream',
-      onDownloadProgress: (progressEvent) => {
-        // const process = Math.round((progressEvent.loaded / progressEvent.total!) * 100)
-        const process: string = ((progressEvent.loaded / progressEvent.total!) * 100).toFixed(2)
-        // 将下载进度返回给回调函数
-        if (progressEvent.loaded === progressEvent.total) {
-          statusCode = '3'
-        }
-        const result = {
-          taskId: data.id,
-          status: statusCode,
-          process
-        }
-        parentPort?.postMessage(result)
+
+  const options: AxiosRequestConfig = {
+    timeout: setting.axios.timeout,
+    responseType: 'stream',
+    onDownloadProgress: (progressEvent) => {
+      // const process = Math.round((progressEvent.loaded / progressEvent.total!) * 100)
+      const process: string = ((progressEvent.loaded / progressEvent.total!) * 100).toFixed(2)
+      // 将下载进度返回给回调函数
+      if (progressEvent.loaded === progressEvent.total) {
+        statusCode = '3'
       }
-    })
+      const result = {
+        taskId: data.id,
+        status: statusCode,
+        process
+      }
+      parentPort!.postMessage(result)
+    }
+  }
+  if (setting.proxy) {
+    options.proxy = {
+      protocol: setting.proxy.protocol,
+      host: setting.proxy.host,
+      port: setting.proxy.port
+    }
+  }
+
+  axios
+    .get(video.url, options)
     .then((res: AxiosResponse) => {
-      const stream: Stream = res.data
+      const stream: stream = res.data
       stream.on('end', () => {
         fs.renameSync(tempPath, realPath)
         log.info(`下载完成 ${realPath}`)
@@ -62,7 +72,7 @@ parentPort?.on('message', (task) => {
           process: '100.00',
           savePath: realPath
         }
-        parentPort?.postMessage(result)
+        parentPort!.postMessage(result)
       })
       const writer = fs.createWriteStream(tempPath)
       stream.pipe(writer)
@@ -74,7 +84,7 @@ parentPort?.on('message', (task) => {
         status: statusCode,
         process
       }
-      parentPort?.postMessage(result)
+      parentPort!.postMessage(result)
       if (fs.existsSync(tempPath)) {
         fs.rmSync(tempPath)
       }

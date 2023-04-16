@@ -5,14 +5,18 @@ import _ from 'lodash'
 // 数据仓库文件名
 const store = new Store({ name: 'vdl-config' })
 // 全局设置
-let setting: common.AppSetting = _.merge(
-  _.cloneDeep(defaultSetting),
-  store.get('setting') as common.AppSetting
-)
+let setting: common.AppSetting = _.cloneDeep(defaultSetting)
+_.mergeWith(setting, store.get('setting') as common.AppSetting, (objValue, srcValue) => {
+  if (srcValue) {
+    return srcValue
+  } else {
+    return objValue
+  }
+})
 
 const saveSetting = (userSetting?: common.AppSetting): void => {
   log.info('保存设置')
-  setting = _.merge(setting, userSetting)
+  _.merge(setting, userSetting)
   store.set('setting', setting)
 }
 

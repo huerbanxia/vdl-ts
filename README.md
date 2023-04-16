@@ -14,6 +14,15 @@ An Electron application with Vue and TypeScript
 $ npm install
 ```
 
+获取二进制构建依赖需要挂代理，在 cmd 中执行以下命令再执行 install
+
+```bash
+set http_proxy=http://127.0.0.1:1080
+set https_proxy=http://127.0.0.1:1080
+```
+
+
+
 ### Development
 
 ```bash
