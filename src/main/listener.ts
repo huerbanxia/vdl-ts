@@ -4,7 +4,7 @@ import { http, resetAxios } from './utils/http'
 import WorkerPool from './utils/worker_pool'
 import { setting, saveSetting, resetToDefault } from './setting'
 import defaultSetting from '../common/defaultSetting'
-import log from 'electron-log'
+import log from './utils/log'
 
 // 初始化下载线程池
 const pool = new WorkerPool(setting.download.maxTaskNum)

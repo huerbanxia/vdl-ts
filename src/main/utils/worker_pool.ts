@@ -3,7 +3,7 @@ import { EventEmitter } from 'events'
 import { resolve } from 'path'
 import createWorker from './task_processor?nodeWorker'
 import { Worker } from 'node:worker_threads'
-import log from 'electron-log'
+import log from './log'
 
 const kTaskInfo = Symbol('kTaskInfo')
 const kWorkerFreedEvent = Symbol('kWorkerFreedEvent')

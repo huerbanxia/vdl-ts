@@ -1,5 +1,5 @@
 import axios, { CreateAxiosDefaults, AxiosInstance } from 'axios'
-import log from 'electron-log'
+import log from './log'
 import { getDefaultHeaders } from './header'
 import { setting } from '../setting'
 
@@ -21,7 +21,7 @@ const createAxios = (): AxiosInstance => {
   // 请求拦截
   service.interceptors.request.use(
     (config) => {
-      log.info('使用代理设置发起请求', config.proxy)
+      log.info('当前请求的代理配置:', config.proxy)
       config.headers = getDefaultHeaders()
       if (setting.axios.authorization) {
         config.headers['Authorization'] = 'Bearer ' + setting.axios.authorization

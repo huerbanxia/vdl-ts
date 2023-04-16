@@ -2,7 +2,7 @@ import { app, shell, BrowserWindow, BrowserWindowConstructorOptions } from 'elec
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import log from 'electron-log'
+import log from './utils/log'
 import defaultSetting from '../common/defaultSetting'
 import { saveSetting, setting } from './setting'
 import registerListener from './listener'

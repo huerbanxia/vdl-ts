@@ -4,7 +4,7 @@ import fs from 'fs'
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
 import _ from 'lodash'
 import { resolve } from 'path'
-import log from 'electron-log'
+import log from './log'
 
 parentPort!.on('message', (task) => {
   const data: common.model.Task = task.data

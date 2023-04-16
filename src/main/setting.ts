@@ -1,6 +1,6 @@
 import defaultSetting from '../common/defaultSetting'
 import Store from 'electron-store'
-import log from 'electron-log'
+import log from './utils/log'
 import _ from 'lodash'
 // 数据仓库文件名
 const store = new Store({ name: 'vdl-config' })
