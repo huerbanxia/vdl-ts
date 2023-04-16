@@ -9,7 +9,7 @@ const createAxios = (): AxiosInstance => {
     timeout: setting.axios.timeout
   }
   // 设置代理
-  if (setting.proxy) {
+  if (setting.isOpenProxy) {
     options.proxy = {
       protocol: setting.proxy.protocol,
       host: setting.proxy.host,

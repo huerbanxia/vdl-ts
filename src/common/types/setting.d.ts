@@ -12,6 +12,7 @@ declare namespace common {
       x?: number
       y?: number
     }
+    isOpenProxy: boolean
     // 代理设置
     proxy: {
       // 协议

@@ -50,7 +50,7 @@ parentPort!.on('message', (task) => {
       parentPort!.postMessage(result)
     }
   }
-  if (setting.proxy) {
+  if (setting.isOpenProxy) {
     options.proxy = {
       protocol: setting.proxy.protocol,
       host: setting.proxy.host,

@@ -74,7 +74,7 @@ export default function registerListtener(win: BrowserWindow): void {
       }
     })
     // 判断是否需要代理
-    if (setting.proxy) {
+    if (setting.isOpenProxy) {
       const proxy = setting.proxy
       const proxyUrl = proxy.protocol + '://' + proxy.host + ':' + proxy.port
       win.webContents.session.setProxy({

@@ -73,7 +73,7 @@ function createWindow(): void {
   })
 
   // 判断是否需要代理
-  if (setting.proxy) {
+  if (setting.isOpenProxy) {
     const proxy = setting.proxy
     const proxyUrl = proxy.protocol + '://' + proxy.host + ':' + proxy.port
     mainWindow.webContents.session.setProxy({

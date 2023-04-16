@@ -5,6 +5,7 @@ const defaultSetting: common.AppSetting = {
     width: 1280,
     height: 720
   },
+  isOpenProxy: false,
   proxy: {
     protocol: 'http',
     host: '127.0.0.1',
