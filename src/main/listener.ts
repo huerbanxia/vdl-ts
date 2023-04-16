@@ -11,6 +11,7 @@ const pool = new WorkerPool(setting.download.maxTaskNum)
 interface Params {
   subscribed?: boolean
   sort?: string
+  rating?: string
   page?: number
   limit?: number
 }
@@ -96,6 +97,7 @@ export default function registerListener(win: BrowserWindow): void {
     } else {
       params.sort = data.sort
     }
+    // params.rating = 'all'
     params.page = data.currentPage - 1
     params.limit = data.pageSize
     log.info(`获取视频列表 参数 `)

@@ -15,6 +15,7 @@ declare namespace common {
       imgUrl: string
       previewSrcList: string[]
       isCheck: boolean
+      isAutoplay: boolean
     }
   }
 }

@@ -67,7 +67,7 @@ const setWinSize = (): void => {
         <el-icon><Sort /></el-icon>
         <template #title>
           任务列表
-          <span v-if="taskStore.doingTask.length > 0">
+          <span v-if="taskStore.doingTask.length > 0" class="circle">
             {{ taskStore.doingTask.length }}
           </span>
         </template>
@@ -103,5 +103,32 @@ const setWinSize = (): void => {
 }
 el-menu--collapse {
   width: 100%;
+}
+@radius: 20px;
+.circle {
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background: #1adf13af;
+  line-height: 20px;
+  margin-left: 5px;
+  animation: circleEnter 0.5s;
+}
+@keyframes circleEnter {
+  0% {
+    width: 0;
+    height: 0;
+    line-height: 0;
+  }
+  50% {
+    width: @radius + 10px;
+    height: @radius+ 10px;
+    line-height: @radius+ 10px;
+  }
+  100% {
+    width: @radius;
+    height: @radius;
+    line-height: @radius;
+  }
 }
 </style>

@@ -57,6 +57,7 @@ const loadData = (): void => {
         item.status = true
         item.createdAtFormat = formatDateTime(item.createdAt)
         item.isCheck = false
+        item.isAutoplay = false
         if (item.file) {
           item.sizeFormat = formatSize(item.file.size)
           item.source = 'iwara'
@@ -124,6 +125,8 @@ const addTasks = (): void => {
 
 // 搜索按钮
 const handleSearchBtn = (): void => {
+  currentPage.value = 1
+  pageSize.value = 24
   loadData()
 }
 
@@ -146,6 +149,14 @@ const handleAffixScroll = ({ scrollTop }): void => {
   } else {
     isAffixTopPadding.value = false
   }
+}
+
+// 鼠标悬停开启自动轮播
+const handleMouseoverEvent = (index: number): void => {
+  tableData.value[index].isAutoplay = true
+}
+const handleMouseleaveEvent = (index: number): void => {
+  tableData.value[index].isAutoplay = false
 }
 
 onMounted(() => {
@@ -235,9 +246,14 @@ watch(pageSize, (newVal, oldVal) => {
             <el-checkbox v-model="item.isCheck" label="勾选下载" @click.stop="() => {}" />
             <el-carousel
               indicator-position="none"
+              arrow="never"
               height="160px"
-              :autoplay="false"
+              :autoplay="item.isAutoplay"
+              :pause-on-hover="false"
+              :interval="800"
               style="cursor: pointer"
+              @mouseover="handleMouseoverEvent(index)"
+              @mouseleave="handleMouseleaveEvent(index)"
             >
               <el-carousel-item v-for="(img, imgIndex) in item.previewSrcList" :key="imgIndex">
                 <!-- 图片尺寸 220*160 -->
@@ -248,7 +264,7 @@ watch(pageSize, (newVal, oldVal) => {
                 </el-image>
               </el-carousel-item>
             </el-carousel>
-            {{ item.title }}
+            <el-text>{{ item.user.name + ' - ' + item.title }}</el-text>
           </div>
         </el-col>
       </el-row>
