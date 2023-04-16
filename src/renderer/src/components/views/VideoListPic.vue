@@ -7,6 +7,7 @@
 <script lang="ts" setup>
 import { ref, reactive, onMounted, watch, Ref } from 'vue'
 import { ElMessage } from 'element-plus'
+import _ from 'lodash'
 // import useWinStore from '../../store/useWinStore'
 import useTaskStore from '../../store/useTaskStore'
 import { ArrowDown, ArrowUp, Picture as IconPicture } from '@element-plus/icons-vue'
@@ -23,7 +24,6 @@ const pageSize = ref(24)
 
 const tableData: Ref<Array<common.model.Video>> = ref([])
 const isAdvancedSearchShow = ref(false)
-const tableRef = ref()
 const isSubscribedDisable = ref(false)
 const listLoading = ref(false)
 const isAll = ref(false)
@@ -57,6 +57,7 @@ const loadData = (): void => {
         // 添加进度状态数据
         item.status = true
         item.createdAtFormat = formatDateTime(item.createdAt)
+        item.isCheck = false
         if (item.file) {
           item.sizeFormat = formatSize(item.file.size)
           item.source = 'iwara'
@@ -89,7 +90,7 @@ const loadData = (): void => {
 
 // 下载按钮
 const addTasks = (): void => {
-  const rows = tableRef.value.getSelectionRows()
+  const rows = _.filter(tableData.value, { isCheck: true })
   if (rows.length > 0) {
     const data: common.model.Task[] = []
     let youtubeVideoNum = 0
@@ -136,13 +137,12 @@ const handleSortSelectChange = (val: string): void => {
     searchForm.isSubscribed = '0'
   }
 }
+
 const handlePicItemClick = (index: number): void => {
-  //TODO 添加点击选中功能
-  console.log(index)
-  tableData[index].isCheck = !tableData[index].isCheck
+  tableData.value[index].isCheck = !tableData.value[index].isCheck
 }
-const handleAffixScroll = ({ scrollTop, fixed }): void => {
-  console.log(scrollTop, fixed)
+
+const handleAffixScroll = ({ scrollTop }): void => {
   if (scrollTop > 20) {
     isAffixTopPadding.value = true
   } else {
@@ -163,9 +163,9 @@ watch(pageSize, (newVal, oldVal) => {
 })
 </script>
 <template>
-  <el-card class="container">
-    <el-affix :offset="41" @scroll="handleAffixScroll">
-      <div class="affix-no-padding" :class="{ 'affix-padding': isAffixTopPadding }">
+  <el-card id="videoListPic" class="container">
+    <el-affix :offset="41" target="#videoListPic" @scroll="handleAffixScroll">
+      <div :class="[isAffixTopPadding ? 'affix-padding' : 'affix-no-padding']">
         <!-- 搜索部分 -->
         <el-form :inline="true" :model="searchForm" class="search-form">
           <el-form-item label="搜索关键词" style="width: 70%">
