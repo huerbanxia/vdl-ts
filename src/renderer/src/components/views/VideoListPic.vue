@@ -177,18 +177,20 @@ watch(pageSize, (newVal, oldVal) => {
     <el-affix :offset="41" target="#videoListPic" @scroll="handleAffixScroll">
       <div :class="[isAffixTopPadding ? 'affix-padding' : 'affix-no-padding', 'affix-dark-bg']">
         <!-- 搜索部分 -->
-        <el-form :inline="true" :model="searchForm" class="search-form">
-          <el-form-item label="搜索关键词" style="width: 70%">
-            <el-input v-model="searchForm.keywords" placeholder="搜索关键词" />
-          </el-form-item>
-          <el-form-item style="position: absolute; right: 20px">
-            <el-button type="primary" plain @click="isAdvancedSearchShow = !isAdvancedSearchShow"
-              >高级搜索
-              <el-icon v-show="!isAdvancedSearchShow" class="el-icon--right"><ArrowDown /></el-icon>
-              <el-icon v-show="isAdvancedSearchShow" class="el-icon--right"><ArrowUp /></el-icon>
-            </el-button>
-            <el-button type="primary" plain @click="handleSearchBtn">搜索</el-button>
-            <el-button type="primary" plain @click="addTasks()">下载</el-button>
+        <el-form :model="searchForm" class="search-form">
+          <el-form-item label="搜索关键词">
+            <el-input v-model="searchForm.keywords" placeholder="搜索关键词" style="width: 70%" />
+            <div class="search-btn">
+              <el-button type="primary" plain @click="isAdvancedSearchShow = !isAdvancedSearchShow"
+                >高级搜索
+                <el-icon v-show="!isAdvancedSearchShow" class="el-icon--right"
+                  ><ArrowDown
+                /></el-icon>
+                <el-icon v-show="isAdvancedSearchShow" class="el-icon--right"><ArrowUp /></el-icon>
+              </el-button>
+              <el-button type="primary" plain @click="handleSearchBtn">搜索</el-button>
+              <el-button type="primary" plain @click="addTasks()">下载</el-button>
+            </div>
           </el-form-item>
           <!-- 高级搜索部分 -->
           <el-collapse-transition>
@@ -327,6 +329,11 @@ watch(pageSize, (newVal, oldVal) => {
     padding-top: 0;
     padding-bottom: 0;
   }
+}
+
+.search-btn {
+  position: absolute;
+  right: 0;
 }
 
 .pagination-top {
