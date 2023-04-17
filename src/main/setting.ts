@@ -6,13 +6,7 @@ import _ from 'lodash'
 const store = new Store({ name: 'vdl-config' })
 // 全局设置
 let setting: common.AppSetting = _.cloneDeep(defaultSetting)
-_.mergeWith(setting, store.get('setting') as common.AppSetting, (objValue, srcValue) => {
-  if (srcValue) {
-    return srcValue
-  } else {
-    return objValue
-  }
-})
+_.merge(setting, store.get('setting') as common.AppSetting)
 
 const saveSetting = (userSetting?: common.AppSetting): void => {
   log.info('保存设置')
