@@ -1,4 +1,4 @@
-import { ipcMain, BrowserWindow, session, dialog, app } from 'electron'
+import { ipcMain, BrowserWindow, session, dialog, app, shell } from 'electron'
 import { analyzeDownloadUrl } from './utils/analyze'
 import { http, resetAxios } from './utils/http'
 import WorkerPool from './utils/worker_pool'
@@ -159,5 +159,9 @@ export default function registerListener(win: BrowserWindow): void {
       log.info('自动更新Token')
       setting.axios.authorization = token
     }
+  })
+
+  ipcMain.handle('on-open-path', (_event, path: string): Promise<string> => {
+    return shell.openPath(path)
   })
 }

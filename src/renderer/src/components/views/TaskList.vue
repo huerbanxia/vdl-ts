@@ -4,9 +4,11 @@ import { IpcRendererEvent } from 'electron'
 import type { TabsPaneContext } from 'element-plus'
 import useTaskStore from '../../store/useTaskStore'
 import useWinStore from '../../store/useWinStore'
+import useSettingStore from '../../store/useSettingStore'
 
 const winStore = useWinStore()
 const taskStore = useTaskStore()
+const settingStore = useSettingStore()
 const activeName = ref('doing')
 const doingTableLoading = ref(false)
 
@@ -17,6 +19,15 @@ const handleClick = (tab: TabsPaneContext, event: Event): void => {
 const handleDeleteTask = (row: common.model.Task): void => {
   taskStore.deleteTask(row.id)
 }
+
+const hadleOpenDownloadDir = (): void => {
+  window.api.openPath(settingStore.setting.download.savePath)
+}
+
+const handleOpenFile = (path: string): void => {
+  window.api.openPath(path)
+}
+
 const getStatusName = (status: string): string => {
   let statusName = ''
   switch (status) {
@@ -73,13 +84,13 @@ onMounted(() => {
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="正在下载" name="doing">
         <el-row class="button-group">
-          <el-button type="danger">批量删除</el-button>
-          <el-button type="primary">打开下载路径</el-button>
+          <!-- <el-button type="danger" plain>批量删除</el-button> -->
+          <el-button type="primary" plain @click="hadleOpenDownloadDir">打开下载路径</el-button>
         </el-row>
         <el-table
           v-loading="doingTableLoading"
           :data="taskStore.doingTask"
-          border
+          :border="true"
           :height="winStore.tableHeight - 40"
           style="width: 100%"
         >
@@ -110,7 +121,7 @@ onMounted(() => {
       <el-tab-pane label="已完成" name="done">
         <el-table
           :data="taskStore.doneTask"
-          border
+          :border="true"
           :height="winStore.tableHeight - 40"
           style="width: 100%"
         >
@@ -121,7 +132,7 @@ onMounted(() => {
           <el-table-column fixed="right" label="操作" width="200">
             <template #default="scope">
               <el-button type="danger" plain @click="handleDeleteTask(scope.row)">删除</el-button>
-              <el-button type="primary" plain @click="handleDeleteTask(scope.row)"
+              <el-button type="primary" plain @click="handleOpenFile(scope.row.savePath)"
                 >打开文件</el-button
               >
             </template>

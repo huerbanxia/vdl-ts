@@ -117,10 +117,6 @@ onActivated(() => {
                   style="width: 73%; margin-right: 2%"
                 />
               </el-form-item>
-              <!-- <el-form-item>
-                <el-button plain @click="handleSelectSavePathBtn">选择路径</el-button>
-                <el-button plain style="margin-right: 10px">重建数据库缓存</el-button>
-              </el-form-item> -->
               <el-form-item label="同时下载任务数">
                 <el-input v-model="configForm.download.maxTaskNum" />
               </el-form-item>

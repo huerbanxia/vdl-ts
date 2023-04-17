@@ -47,6 +47,9 @@ const api = {
   },
   openSaveDialog(): Promise<Electron.OpenDialogReturnValue> {
     return ipcRenderer.invoke('on-open-save-dialog')
+  },
+  openPath(path: string): Promise<string> {
+    return ipcRenderer.invoke('on-open-path', path)
   }
 }
 
