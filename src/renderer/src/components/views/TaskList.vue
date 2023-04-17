@@ -129,9 +129,11 @@ onMounted(() => {
           <el-table-column prop="title" label="标题" show-overflow-tooltip width="400" />
           <el-table-column prop="sizeFormat" label="文件大小" show-overflow-tooltip width="100" />
           <el-table-column prop="savePath" label="保存路径" show-overflow-tooltip />
-          <el-table-column fixed="right" label="操作" width="200">
+          <el-table-column fixed="right" label="操作" width="220">
             <template #default="scope">
-              <el-button type="danger" plain @click="handleDeleteTask(scope.row)">删除</el-button>
+              <el-button type="danger" plain @click="handleDeleteTask(scope.row)"
+                >删除任务</el-button
+              >
               <el-button type="primary" plain @click="handleOpenFile(scope.row.savePath)"
                 >打开文件</el-button
               >
