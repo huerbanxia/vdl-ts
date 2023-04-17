@@ -16,10 +16,8 @@ const settingStore = useSettingStore()
 
 const { setting: configForm } = storeToRefs(settingStore)
 
-// const configForm: common.AppSetting = settingStore.setting
-
 // 默认展开项
-const activeNames = ref(['0', '1', '2', '3'])
+const activeNames = ref(['0', '1', '2'])
 const handleChange = (value: CollapseModelValue): void => {
   console.log(value)
 }
@@ -78,21 +76,31 @@ onActivated(() => {
               <template #title>
                 <h2>代理</h2>
               </template>
+
+              <el-form-item label="开启代理" style="margin-top: 10px">
+                <el-switch
+                  v-model="configForm.isOpenProxy"
+                  size="large"
+                  active-text="开"
+                  inactive-text="关"
+                />
+              </el-form-item>
               <el-form-item label="协议" style="margin-top: 10px">
                 <el-select
                   v-model="configForm.proxy.protocol"
                   placeholder="请选择代理协议"
                   style="width: 100%"
+                  :disabled="!configForm.isOpenProxy"
                 >
                   <el-option label="http" value="http" />
                   <el-option label="https" value="https" />
                 </el-select>
               </el-form-item>
               <el-form-item label="主机">
-                <el-input v-model="configForm.proxy.host" />
+                <el-input v-model="configForm.proxy.host" :disabled="!configForm.isOpenProxy" />
               </el-form-item>
               <el-form-item label="端口">
-                <el-input v-model="configForm.proxy.port" />
+                <el-input v-model="configForm.proxy.port" :disabled="!configForm.isOpenProxy" />
               </el-form-item>
             </el-collapse-item>
 
@@ -130,20 +138,16 @@ onActivated(() => {
                 <el-input v-model="configForm.axios.timeout" />
               </el-form-item>
             </el-collapse-item>
-
-            <el-collapse-item name="3">
-              <template #title>
-                <h2>全局(重启后生效)</h2>
-              </template>
-            </el-collapse-item>
           </el-collapse>
 
           <div class="button-group">
             <el-button type="primary" plain @click="handleSaveConfig">保存设置</el-button>
-            <el-button type="primary" plain @click="dialogVisible = true">重置设置</el-button>
+            <el-button type="primary" plain style="margin-left: 0" @click="dialogVisible = true"
+              >重置设置</el-button
+            >
           </div>
-        </el-form></el-col
-      >
+        </el-form>
+      </el-col>
     </el-row>
 
     <el-dialog v-model="dialogVisible" title="确认" width="30%">
