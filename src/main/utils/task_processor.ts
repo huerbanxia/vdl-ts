@@ -69,7 +69,7 @@ parentPort!.on('message', (task) => {
           over: true,
           taskId: data.id,
           status: '3',
-          process: '100.00',
+          process: 100.0,
           savePath: realPath
         }
         parentPort!.postMessage(result)

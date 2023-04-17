@@ -181,7 +181,7 @@ watch(pageSize, (newVal, oldVal) => {
           <el-form-item label="搜索关键词" style="width: 70%">
             <el-input v-model="searchForm.keywords" placeholder="搜索关键词" />
           </el-form-item>
-          <el-form-item style="margin-left: auto; margin-right: 0">
+          <el-form-item style="position: absolute; right: 20px">
             <el-button type="primary" plain @click="isAdvancedSearchShow = !isAdvancedSearchShow"
               >高级搜索
               <el-icon v-show="!isAdvancedSearchShow" class="el-icon--right"><ArrowDown /></el-icon>
