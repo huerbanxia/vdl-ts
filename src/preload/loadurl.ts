@@ -1,4 +1,7 @@
 import { ipcRenderer } from 'electron'
+// 更新token
+const token = localStorage.getItem('token')
+ipcRenderer.invoke('on-update-token', token)
 
 ipcRenderer.on('on-did-finish-load', (event, task: common.model.Task) => {
   console.log('开始解析下载链接')

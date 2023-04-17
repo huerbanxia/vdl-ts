@@ -5,6 +5,7 @@ import WorkerPool from './utils/worker_pool'
 import { setting, saveSetting, resetToDefault } from './setting'
 import defaultSetting from '../common/defaultSetting'
 import log from './utils/log'
+import { join } from 'node:path'
 
 // 初始化下载线程池
 const pool = new WorkerPool(setting.download.maxTaskNum)
@@ -70,6 +71,7 @@ export default function registerListener(win: BrowserWindow): void {
       height: 720,
       autoHideMenuBar: true,
       webPreferences: {
+        preload: join(__dirname, '../preload/getData.js'),
         //共享session
         session: session.fromPartition('persist:session-iwara')
       }
@@ -150,5 +152,12 @@ export default function registerListener(win: BrowserWindow): void {
 
   ipcMain.handle('on-test-pool', (_e, data) => {
     console.log(data)
+  })
+
+  ipcMain.handle('on-update-token', (_e, token: string) => {
+    if (token && token !== setting.axios.authorization) {
+      log.info('自动更新Token')
+      setting.axios.authorization = token
+    }
   })
 }

@@ -20,7 +20,9 @@ export default defineConfig({
           // 主进程预加载脚本
           index: resolve(__dirname, 'src/preload/index.ts'),
           // 解析下载预加载脚本
-          loadurl: resolve(__dirname, 'src/preload/loadurl.ts')
+          loadurl: resolve(__dirname, 'src/preload/loadurl.ts'),
+          // 获取token脚本
+          getData: resolve(__dirname, 'src/preload/getData.ts')
         }
       }
     }

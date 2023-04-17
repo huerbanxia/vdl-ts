@@ -6,7 +6,7 @@
 -->
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { ref, onMounted } from 'vue'
+import { ref, onActivated } from 'vue'
 import useSettingStore from '../../store/useSettingStore'
 import { CollapseModelValue } from 'element-plus'
 
@@ -46,7 +46,9 @@ const handleLoginBtn = (): void => {
   window.api.login()
 }
 
-onMounted(() => {})
+onActivated(() => {
+  settingStore.init()
+})
 </script>
 <template>
   <el-card class="container">
