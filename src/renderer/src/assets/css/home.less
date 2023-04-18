@@ -12,7 +12,7 @@
 }
 
 .el-aside {
-  background-color: #222226;
+  background-color: #666672;
   text-align: center;
   line-height: 200px;
   overflow: hidden;
@@ -69,4 +69,23 @@
   100% {
     transform: scale(1);
   }
+}
+
+// .slide-fade-enter-active {
+//   transition-property: all;
+//   transition-duration: 0.05s;
+
+//   // transition: all 0.2s;
+// }
+
+// .slide-fade-leave-active {
+//   transition-property: all;
+//   transition-duration: 0.05s;
+// }
+
+.v-enter-active {
+  animation: fadeIn 0.3s;
+}
+.v-leave-active {
+  animation: backOutUp 0.3s;
 }

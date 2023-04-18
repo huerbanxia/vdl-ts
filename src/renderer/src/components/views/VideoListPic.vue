@@ -127,6 +127,7 @@ const addTasks = (): void => {
 const handleSearchBtn = (): void => {
   currentPage.value = 1
   pageSize.value = 24
+  document.getElementById('videoListPic')!.scrollTop = 1
   loadData()
 }
 

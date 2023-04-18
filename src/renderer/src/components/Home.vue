@@ -8,6 +8,7 @@
 import { ref, onMounted } from 'vue'
 import AsideMenu from './AsideMenu.vue'
 import TitleBar from './TitleBar.vue'
+import 'animate.css'
 // import { ElMessage } from 'element-plus'
 
 /**
@@ -33,7 +34,7 @@ const changeCollapse = (collapse: boolean): void => {
 </script>
 <template>
   <el-container>
-    <el-aside :class="[isCollapse ? 'aside-fold' : 'aside-expand']">
+    <el-aside :class="[isCollapse ? 'aside-fold' : 'aside-expand', 'el-aside-dark']">
       <AsideMenu @change-collapse="changeCollapse"></AsideMenu>
     </el-aside>
     <el-container>
@@ -42,10 +43,13 @@ const changeCollapse = (collapse: boolean): void => {
       </el-header>
       <el-main>
         <!-- vue3.0配置 -->
-        <router-view v-slot="{ Component }">
+        <router-view v-slot="{ Component, route }">
           <!-- <transition name="el-fade-in-linear"> -->
-          <keep-alive><component :is="Component" /></keep-alive>
-          <!-- </transition> -->
+          <transition mode="out-in">
+            <keep-alive>
+              <component :is="Component" :key="route.path" />
+            </keep-alive>
+          </transition>
         </router-view>
       </el-main>
     </el-container>

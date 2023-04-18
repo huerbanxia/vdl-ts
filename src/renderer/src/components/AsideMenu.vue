@@ -5,13 +5,15 @@
  * AsideMenu.vue
 -->
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { Document, Menu as IconMenu, Location, Expand, Fold, Sort } from '@element-plus/icons-vue'
 
 import useTaskStore from '../store/useTaskStore'
+import useThemeStore from '@renderer/store/useThemeStore'
 
 const taskStore = useTaskStore()
+const themeStore = useThemeStore()
 
 const router = useRouter()
 const isCollapse = ref(true)
@@ -21,6 +23,14 @@ const changeCollapse = (): void => {
   isCollapse.value = !isCollapse.value
   emit('change-collapse', isCollapse.value)
 }
+
+const menuBgColor = computed(() => {
+  if (!themeStore.isDark) {
+    return '#222226'
+  }
+  return '#666672'
+})
+
 onMounted(() => {
   // 初始化访问根路径
   router.push('/videoListPic')
@@ -34,7 +44,7 @@ const setWinSize = (): void => {
 <template>
   <div class="container">
     <el-menu
-      background-color="#222226"
+      :background-color="menuBgColor"
       text-color="#fff"
       active-text-color="#fff"
       :collapse="isCollapse"
@@ -48,7 +58,7 @@ const setWinSize = (): void => {
     </el-menu>
 
     <el-menu
-      background-color="#222226"
+      :background-color="menuBgColor"
       text-color="#fff"
       active-text-color="#ffd04b"
       default-active="/videoListPic"
@@ -79,7 +89,7 @@ const setWinSize = (): void => {
     </el-menu>
 
     <el-menu
-      background-color="#222226"
+      :background-color="menuBgColor"
       text-color="#fff"
       active-text-color="#fff"
       :collapse="isCollapse"

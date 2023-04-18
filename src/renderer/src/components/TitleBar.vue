@@ -8,13 +8,18 @@
 import { ref } from 'vue'
 import { useDark, useToggle } from '@vueuse/core'
 import { Sunny, Moon } from '@element-plus/icons-vue'
+import useThemeStore from '@renderer/store/useThemeStore'
 
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
-const value1 = ref(false)
+const darkSwitch = ref(false)
+
+const themeStore = useThemeStore()
+themeStore.setDark(darkSwitch.value)
 
 const handleDarkBtnClick = (): void => {
   toggleDark()
+  themeStore.setDark(darkSwitch.value)
 }
 </script>
 <template>
@@ -22,7 +27,7 @@ const handleDarkBtnClick = (): void => {
     <span>VDL</span>
     <div class="switch-button">
       <el-switch
-        v-model="value1"
+        v-model="darkSwitch"
         style="--el-switch-on-color: #545c64"
         inline-prompt
         :active-icon="Sunny"
