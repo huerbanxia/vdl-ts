@@ -46,7 +46,7 @@ class WorkerPool extends EventEmitter {
     this.freeWorkers = []
     this.tasks = []
 
-    log.info(`初始化下载线程池大小为${this.numThreads}`)
+    log.debug(`初始化下载线程池大小为${this.numThreads}`)
 
     for (let i = 0; i < numThreads; i++) this.addNewWorker()
 
@@ -62,7 +62,7 @@ class WorkerPool extends EventEmitter {
   addNewWorker(): void {
     // @ts-ignore 修改后的参数
     const worker = createWorker(resolve(__dirname, 'task_processor.js'))
-    log.info('创建子线程 线程id:', worker.threadId)
+    log.debug('创建子线程 线程id:', worker.threadId)
     worker.on('message', (result) => {
       // 获取到信息后调用回返回信息
       if (worker[kTaskInfo]) {

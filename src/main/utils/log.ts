@@ -1,19 +1,21 @@
-import { is } from '@electron-toolkit/utils'
-import log from 'electron-log'
+import log, { LevelOption } from 'electron-log'
+import { useEnv } from '@/common/env'
 
-// 开发环境控制台样式配置
-if (is.dev) {
-  // 判断它是否在终端（terminal）终端环境中执行 指定为true
-  process.stdout.isTTY = true
-  // 使用样式
-  log.transports.console.useStyles = true
-  // 日志控制台等级，默认值：false
-  log.transports.console.level = 'debug'
-  // 日志控制台格式化
-  log.transports.console.format = '[{y}-{m}-{d} {h}:{i}:{s}.{ms}] [{level}]{scope} {text}'
-}
+// 设置为在终端环境中运行
+process.stdout.isTTY = useEnv(import.meta.env.MAIN_VITE_PROCESS_STDOUT_TTY) as boolean
+// 使用样式
+log.transports.console.useStyles = useEnv(
+  import.meta.env.MAIN_VITE_LOG_CONSOLE_USESTYLES
+) as boolean
+// 日志控制台等级
+log.transports.console.level = useEnv(import.meta.env.MAIN_VITE_LOG_CONSOLE_LEVEL) as LevelOption
+// 日志控制台格式化
+log.transports.console.format = import.meta.env.MAIN_VITE_LOG_CONSOLE_FORMAT
+// 日志文件等级
+log.transports.file.level = useEnv(import.meta.env.MAIN_VITE_LOG_FILE_LEVEL) as LevelOption
+
 // 日志文件等级，level, default 'silly'
-log.transports.file.level = is.dev ? 'debug' : 'info'
+// log.transports.file.level = is.dev ? false : 'info'
 
 // log.info('%cRed text. %cGreen text', 'color: red', 'color: green')
 
@@ -33,5 +35,4 @@ log.transports.file.level = is.dev ? 'debug' : 'info'
 // log.debug('Hello, log debug')
 // log.silly('Hello, log silly')
 // log.info('中文')
-
 export default log

@@ -10,14 +10,14 @@ import registerListener from '@/main/listener/index'
 import { DbOperate } from './db/db_operate'
 
 // 全局异常处理
-process.on('uncaughtException', function (error) {
-  log.error(error.message)
-})
+// process.on('uncaughtException', function (error) {
+//   log.error(error.message)
+// })
 
 const dbo = new DbOperate()
 
 function createWindow(): void {
-  log.info('创建新窗口')
+  log.debug('创建新窗口')
   const options: BrowserWindowConstructorOptions = {
     ...defaultSetting.state,
     minWidth: 1280,

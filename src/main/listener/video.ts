@@ -32,8 +32,6 @@ export const registerVideoListener = (wc: WebContents, dbo: DbOperate): void => 
     // params.rating = 'all'
     params.page = data.currentPage - 1
     params.limit = data.pageSize
-    log.info(`获取视频列表 参数 `)
-    log.info(params)
     const res: common.params.VideoResults = await http.get('https://api.iwara.tv/videos', {
       params
     })

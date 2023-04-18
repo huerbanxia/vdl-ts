@@ -21,7 +21,7 @@ const createAxios = (): AxiosInstance => {
   // 请求拦截
   service.interceptors.request.use(
     (config) => {
-      log.info('当前请求的代理配置:', config.proxy)
+      log.debug('当前请求的代理配置:', config.proxy)
       config.headers = getDefaultHeaders()
       if (setting.axios.authorization) {
         config.headers['Authorization'] = 'Bearer ' + setting.axios.authorization
