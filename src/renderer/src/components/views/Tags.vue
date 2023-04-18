@@ -7,15 +7,19 @@
 <script lang="ts" setup>
 defineProps<{
   tags?: Array<common.model.TagData>
+  sizeFormat: string
 }>()
 </script>
 <template>
   <div class="container">
+    <el-tag class="ml-2 tag">{{ sizeFormat }}</el-tag>
     <el-tag class="ml-2 tag" type="success">首次</el-tag>
-    <el-tag class="ml-2 tag" type="success">下载过</el-tag>
-    <el-tag class="ml-2 tag" type="danger">已删除</el-tag>
+    <!-- <el-tag class="ml-2 tag" type="success">下过</el-tag> -->
+    <el-tag class="ml-2 tag" type="danger">删除</el-tag>
     <br />
-    <el-tag v-for="(data, index) in tags" :key="index" class="ml-2 tag">{{ data.id }}</el-tag>
+    <el-scrollbar max-height="50px">
+      <el-tag v-for="(data, index) in tags" :key="index" class="ml-2 tag">{{ data.id }}</el-tag>
+    </el-scrollbar>
   </div>
 </template>
 
@@ -23,7 +27,8 @@ defineProps<{
 .container {
   margin-top: 8px;
   margin-bottom: 5px;
-  max-height: 100px;
+  max-height: 80px;
+  overflow: hidden;
 }
 .tag {
   margin-top: 5px;

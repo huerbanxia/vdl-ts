@@ -142,8 +142,6 @@ const handleSortSelectChange = (val: string): void => {
 }
 
 const handlePicItemClick = (index: number, isCheck: boolean): void => {
-  console.log(index, isCheck)
-
   tableData.value[index].isCheck = isCheck
 }
 
@@ -167,60 +165,98 @@ watch(pageSize, (newVal, oldVal) => {
   loadData()
   console.log(newVal, oldVal)
 })
+
+watch(isAll, () => {
+  tableData.value.forEach((item) => {
+    item.isCheck = isAll.value
+  })
+})
 </script>
 <template>
-  <el-card id="videoListPic" class="container">
-    <el-affix :offset="41" target="#videoListPic" @scroll="handleAffixScroll">
-      <div :class="[isAffixTopPadding ? 'affix-padding' : 'affix-no-padding', 'affix-dark-bg']">
-        <!-- 搜索部分 -->
-        <el-form :model="searchForm" class="search-form">
-          <el-form-item label="搜索关键词">
-            <el-input v-model="searchForm.keywords" placeholder="搜索关键词" style="width: 70%" />
-            <div class="search-btn">
-              <el-button type="primary" plain @click="isAdvancedSearchShow = !isAdvancedSearchShow"
-                >高级搜索
-                <el-icon v-show="!isAdvancedSearchShow" class="el-icon--right"
-                  ><ArrowDown
-                /></el-icon>
-                <el-icon v-show="isAdvancedSearchShow" class="el-icon--right"><ArrowUp /></el-icon>
-              </el-button>
-              <el-button type="primary" plain @click="handleSearchBtn">搜索</el-button>
-              <el-button type="primary" plain @click="addTasks()">下载</el-button>
-            </div>
-          </el-form-item>
-          <!-- 高级搜索部分 -->
-          <el-collapse-transition>
-            <div v-show="isAdvancedSearchShow">
-              <el-form :inline="true" :model="searchForm" class="advanced-search">
-                <el-form-item label="是否为关注列表">
-                  <el-select
-                    v-model="searchForm.isSubscribed"
-                    placeholder="是否为关注列表"
-                    :disabled="isSubscribedDisable"
-                  >
-                    <el-option label="是" value="1" />
-                    <el-option label="否" value="0" />
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="排序规则">
-                  <el-select
-                    v-model="searchForm.sort"
-                    placeholder="排序规则"
-                    @change="handleSortSelectChange"
-                  >
-                    <el-option label="日期" value="date" />
-                    <el-option label="趋势" value="trending" />
-                    <el-option label="受欢迎" value="popularity" />
-                    <el-option label="views" value="views" />
-                    <el-option label="likes" value="likes" />
-                  </el-select>
-                </el-form-item>
-              </el-form>
-            </div>
-          </el-collapse-transition>
-        </el-form>
-        <!-- 页首分页 -->
-        <div v-if="tableData.length > 0" class="pagination-top">
+  <el-scrollbar max-height="700">
+    <el-card id="videoListPic" class="container">
+      <el-affix :offset="40" target="#videoListPic" @scroll="handleAffixScroll">
+        <div :class="[isAffixTopPadding ? 'affix-padding' : 'affix-no-padding', 'affix-dark-bg']">
+          <!-- 搜索部分 -->
+          <el-form :model="searchForm" class="search-form">
+            <el-form-item label="搜索关键词">
+              <el-input v-model="searchForm.keywords" placeholder="搜索关键词" style="width: 70%" />
+              <div class="search-btn">
+                <el-button
+                  type="primary"
+                  plain
+                  @click="isAdvancedSearchShow = !isAdvancedSearchShow"
+                  >高级搜索
+                  <el-icon v-show="!isAdvancedSearchShow" class="el-icon--right"
+                    ><ArrowDown
+                  /></el-icon>
+                  <el-icon v-show="isAdvancedSearchShow" class="el-icon--right"
+                    ><ArrowUp
+                  /></el-icon>
+                </el-button>
+                <el-button type="primary" plain @click="handleSearchBtn">搜索</el-button>
+                <el-button type="primary" plain @click="addTasks()">下载</el-button>
+              </div>
+            </el-form-item>
+            <!-- 高级搜索部分 -->
+            <el-collapse-transition>
+              <div v-show="isAdvancedSearchShow">
+                <el-form :inline="true" :model="searchForm" class="advanced-search">
+                  <el-form-item label="是否为关注列表">
+                    <el-select
+                      v-model="searchForm.isSubscribed"
+                      placeholder="是否为关注列表"
+                      :disabled="isSubscribedDisable"
+                    >
+                      <el-option label="是" value="1" />
+                      <el-option label="否" value="0" />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="排序规则">
+                    <el-select
+                      v-model="searchForm.sort"
+                      placeholder="排序规则"
+                      @change="handleSortSelectChange"
+                    >
+                      <el-option label="日期" value="date" />
+                      <el-option label="趋势" value="trending" />
+                      <el-option label="受欢迎" value="popularity" />
+                      <el-option label="views" value="views" />
+                      <el-option label="likes" value="likes" />
+                    </el-select>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </el-collapse-transition>
+          </el-form>
+          <!-- 页首分页 -->
+          <div v-if="tableData.length > 0" class="pagination-top">
+            <el-pagination
+              v-model:current-page="currentPage"
+              v-model:page-size="pageSize"
+              background
+              :page-sizes="[24, 50]"
+              layout="sizes, prev, pager, next, jumper, ->, total"
+              :total="total"
+            />
+          </div>
+        </div>
+      </el-affix>
+
+      <!-- 回到顶部 -->
+      <el-backtop target="#videoListPic" :right="100" :bottom="60" :visibility-height="10" />
+
+      <div v-loading="listLoading" class="video-list">
+        <!-- 视频主体部分 -->
+        <el-checkbox v-model="isAll" label="全选" />
+        <el-row :gutter="30">
+          <el-col v-for="(item, index) in tableData" :key="index" :span="6">
+            <video-item :index="index" :video="item" @change="handlePicItemClick"></video-item>
+          </el-col>
+        </el-row>
+
+        <!-- 页脚分页 -->
+        <div v-if="tableData.length > 0" class="pagination-bottom">
           <el-pagination
             v-model:current-page="currentPage"
             v-model:page-size="pageSize"
@@ -231,40 +267,15 @@ watch(pageSize, (newVal, oldVal) => {
           />
         </div>
       </div>
-    </el-affix>
-
-    <!-- 回到顶部 -->
-    <el-backtop target="#videoListPic" :right="100" :bottom="60" :visibility-height="10" />
-
-    <div v-loading="listLoading" class="video-list">
-      <!-- 视频主体部分 -->
-      <el-checkbox v-model="isAll" label="全选" />
-      <el-row :gutter="30">
-        <el-col v-for="(item, index) in tableData" :key="index" :span="6">
-          <video-item :index="index" :video="item" @change="handlePicItemClick"></video-item>
-        </el-col>
-      </el-row>
-
-      <!-- 页脚分页 -->
-      <div v-if="tableData.length > 0" class="pagination-bottom">
-        <el-pagination
-          v-model:current-page="currentPage"
-          v-model:page-size="pageSize"
-          background
-          :page-sizes="[24, 50]"
-          layout="sizes, prev, pager, next, jumper, ->, total"
-          :total="total"
-        />
-      </div>
-    </div>
-  </el-card>
+    </el-card>
+  </el-scrollbar>
 </template>
 
 <style lang="less" scoped>
 .container {
   margin: 0;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
 }
 .affix {
   background-color: #ffffff;

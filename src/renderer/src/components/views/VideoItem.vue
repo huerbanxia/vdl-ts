@@ -35,9 +35,11 @@ watch(isCheck, () => {
 })
 </script>
 <template>
-  <div class="container" @click="handleClick">
+  <el-card class="video-item" @click="handleClick">
     <!-- @click.stop="() => {}"阻止冒泡事件导致执行两次无法选中 -->
-    <el-checkbox v-model="isCheck" label="勾选下载" @click.stop="() => {}" />
+    <div class="check-box" :class="{ 'check-box-active': isCheck }">
+      <el-checkbox v-model="isCheck" label="勾选下载" @click.stop="() => {}" />
+    </div>
 
     <el-carousel
       indicator-position="none"
@@ -46,14 +48,14 @@ watch(isCheck, () => {
       :autoplay="isAutoPlay"
       :pause-on-hover="false"
       :interval="800"
-      style="cursor: pointer"
+      class="carousel"
       @mouseover="handleMouseoverEvent()"
       @mouseleave="handleMouseleaveEvent()"
     >
       <data-tag :num-views="video.numViews" :num-likes="video.numLikes"></data-tag>
       <el-carousel-item v-for="(img, imgIndex) in video.previewSrcList" :key="imgIndex">
         <!-- 图片尺寸 220*160 -->
-        <el-image :src="img" fit="contain" style="width: 100%">
+        <el-image :src="img" fit="contain" style="width: 100%" draggable="false">
           <template #error>
             <el-icon><icon-picture /></el-icon>
           </template>
@@ -61,9 +63,28 @@ watch(isCheck, () => {
       </el-carousel-item>
     </el-carousel>
 
-    <tags :tags="video.tags"></tags>
+    <tags :tags="video.tags" :size-format="video.sizeFormat"></tags>
     <el-text>{{ video.user.name + ' - ' + video.title }}</el-text>
-  </div>
+  </el-card>
 </template>
 
-<style scoped></style>
+<style lang="less" scoped>
+.video-item {
+  height: 350px;
+  margin-bottom: 10px;
+}
+.carousel {
+  cursor: pointer;
+  // 禁止图片拖动 在img标签配置属性 draggable=false pointer-events会禁止pointer相关的鼠标事件
+  // pointer-events: none;
+  // 禁止选中
+  user-select: none;
+}
+.check-box {
+  width: 100%;
+}
+.check-box-active {
+  background-color: #43434b;
+  border-radius: 10px 10px 0 0;
+}
+</style>

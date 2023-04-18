@@ -12,7 +12,7 @@ const defaultSetting: common.AppSetting = {
     port: 1081
   },
   axios: {
-    timeout: 10 * 1000,
+    timeout: 5 * 1000,
     authorization: ''
   },
   download: {
