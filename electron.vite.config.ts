@@ -10,7 +10,13 @@ import ElementPlus from 'unplugin-element-plus/vite'
 
 export default defineConfig({
   main: {
-    plugins: [externalizeDepsPlugin()]
+    plugins: [externalizeDepsPlugin()],
+    // 路径别名配置 需同步在 tsconfig.json 配置
+    resolve: {
+      alias: {
+        '@': resolve('src')
+      }
+    }
   },
   preload: {
     plugins: [externalizeDepsPlugin()],

@@ -16,5 +16,12 @@ declare namespace common {
       status: string
       savePath: string
     }
+
+    interface VideoResults {
+      count: number
+      limit: number
+      page: number
+      results: Array<common.model.Video>
+    }
   }
 }

@@ -1,6 +1,6 @@
 declare namespace common {
   declare namespace model {
-    interface Video {
+    class Video {
       id: string
       title: string
       slug: string
@@ -16,6 +16,13 @@ declare namespace common {
       previewSrcList: string[]
       isCheck: boolean
       isAutoplay: boolean
+      isData: boolean
+    }
+
+    class VideoData extends Video {
+      size?: number
+      isSaved: number
+      fileId?: string
     }
   }
 }
