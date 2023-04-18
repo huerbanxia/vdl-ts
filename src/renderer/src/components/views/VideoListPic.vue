@@ -9,8 +9,9 @@ import { ref, reactive, onMounted, watch, Ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import _ from 'lodash'
 import useTaskStore from '../../store/useTaskStore'
-import { ArrowDown, ArrowUp, Picture as IconPicture } from '@element-plus/icons-vue'
+import { ArrowDown, ArrowUp } from '@element-plus/icons-vue'
 import { formatFileName, formatSize, formatDateTime } from '../../utils/format'
+import VideoItem from '@renderer/components/views/VideoItem.vue'
 
 // 仓库初始化
 // const winStore = useWinStore()
@@ -23,7 +24,7 @@ const pageSize = ref(24)
 
 const tableData: Ref<Array<common.model.Video>> = ref([])
 const isAdvancedSearchShow = ref(false)
-const isSubscribedDisable = ref(false)
+const isSubscribedDisable = ref(true)
 const listLoading = ref(false)
 const isAll = ref(false)
 const isAffixTopPadding = ref(false)
@@ -31,8 +32,8 @@ const isAffixTopPadding = ref(false)
 // 搜索
 const searchForm = reactive({
   keywords: '',
-  isSubscribed: '1',
-  sort: 'date'
+  isSubscribed: '0',
+  sort: 'trending'
 })
 
 // 加载表格数据
@@ -140,8 +141,10 @@ const handleSortSelectChange = (val: string): void => {
   }
 }
 
-const handlePicItemClick = (index: number): void => {
-  tableData.value[index].isCheck = !tableData.value[index].isCheck
+const handlePicItemClick = (index: number, isCheck: boolean): void => {
+  console.log(index, isCheck)
+
+  tableData.value[index].isCheck = isCheck
 }
 
 const handleAffixScroll = ({ scrollTop }): void => {
@@ -150,14 +153,6 @@ const handleAffixScroll = ({ scrollTop }): void => {
   } else {
     isAffixTopPadding.value = false
   }
-}
-
-// 鼠标悬停开启自动轮播
-const handleMouseoverEvent = (index: number): void => {
-  tableData.value[index].isAutoplay = true
-}
-const handleMouseleaveEvent = (index: number): void => {
-  tableData.value[index].isAutoplay = false
 }
 
 onMounted(() => {
@@ -237,38 +232,16 @@ watch(pageSize, (newVal, oldVal) => {
         </div>
       </div>
     </el-affix>
+
     <!-- 回到顶部 -->
     <el-backtop target="#videoListPic" :right="100" :bottom="60" :visibility-height="10" />
+
     <div v-loading="listLoading" class="video-list">
       <!-- 视频主体部分 -->
       <el-checkbox v-model="isAll" label="全选" />
       <el-row :gutter="30">
         <el-col v-for="(item, index) in tableData" :key="index" :span="6">
-          <div @click="handlePicItemClick(index)">
-            <!-- @click.stop="() => {}"阻止冒泡事件导致执行两次无法选中 -->
-            <el-checkbox v-model="item.isCheck" label="勾选下载" @click.stop="() => {}" />
-            <el-carousel
-              indicator-position="none"
-              arrow="never"
-              height="160px"
-              :autoplay="item.isAutoplay"
-              :pause-on-hover="false"
-              :interval="800"
-              style="cursor: pointer"
-              @mouseover="handleMouseoverEvent(index)"
-              @mouseleave="handleMouseleaveEvent(index)"
-            >
-              <el-carousel-item v-for="(img, imgIndex) in item.previewSrcList" :key="imgIndex">
-                <!-- 图片尺寸 220*160 -->
-                <el-image :src="img" fit="contain" style="width: 100%">
-                  <template #error>
-                    <el-icon><icon-picture /></el-icon>
-                  </template>
-                </el-image>
-              </el-carousel-item>
-            </el-carousel>
-            <el-text>{{ item.user.name + ' - ' + item.title }}</el-text>
-          </div>
+          <video-item :index="index" :video="item" @change="handlePicItemClick"></video-item>
         </el-col>
       </el-row>
 
@@ -293,9 +266,6 @@ watch(pageSize, (newVal, oldVal) => {
   height: 100%;
   overflow: auto;
 }
-// :deep(.el-card__body) {
-//   padding-top: 0px;
-// }
 .affix {
   background-color: #ffffff;
 }
