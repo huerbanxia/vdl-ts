@@ -94,6 +94,10 @@ export const registerVideoListener = (wc: WebContents, dbo: DbOperate): void => 
           savePath: result.savePath
         }
         wc.send('update-process', res)
+        // 更新数据库
+        if (result.over) {
+          dbo.updateVideo(result.videoId, result.savePath)
+        }
       }
     })
   })

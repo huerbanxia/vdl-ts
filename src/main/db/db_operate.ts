@@ -9,7 +9,6 @@ const createTableVideoSql = `CREATE TABLE if not exists "video" (
   "title" text,
   "slug" text,
   "createdAt" text,
-  "createdAtFormat" text,
   "size" integer,
   "source" text,
   "isSaved" integer,
@@ -63,6 +62,13 @@ export class DbOperate {
   }
   saveVideo(video: common.model.VideoData): void {
     this.insert.run(video)
+  }
+
+  updateVideo(videoId: string, savePath: string): void {
+    const updateStmt = this.db.prepare(
+      `UPDATE video SET savePath =@savePath, isSaved=1 WHERE id=@id`
+    )
+    updateStmt.run({ id: videoId, savePath: savePath })
   }
 
   exit(): void {

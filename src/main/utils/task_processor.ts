@@ -69,6 +69,7 @@ parentPort!.on('message', (task) => {
         const result = {
           over: true,
           taskId: data.id,
+          videoId: data.videoId,
           status: '3',
           process: 100.0,
           savePath: realPath
