@@ -5,21 +5,19 @@
  * AsideMenu.vue
 -->
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useDark, useToggle } from '@vueuse/core'
+import { useDark } from '@vueuse/core'
 import { Sunny, Moon } from '@element-plus/icons-vue'
 import useThemeStore from '@renderer/store/useThemeStore'
 
 const isDark = useDark()
-const toggleDark = useToggle(isDark)
-const darkSwitch = ref(false)
+// const toggleDark = useToggle(isDark)
+// const darkSwitch = ref(false)
 
 const themeStore = useThemeStore()
-themeStore.setDark(darkSwitch.value)
+themeStore.setDark(isDark.value)
 
 const handleDarkBtnClick = (): void => {
-  toggleDark()
-  themeStore.setDark(darkSwitch.value)
+  themeStore.setDark(isDark.value)
 }
 </script>
 <template>
@@ -27,7 +25,7 @@ const handleDarkBtnClick = (): void => {
     <span>VDL</span>
     <div class="switch-button">
       <el-switch
-        v-model="darkSwitch"
+        v-model="isDark"
         style="--el-switch-on-color: #545c64"
         inline-prompt
         :active-icon="Sunny"

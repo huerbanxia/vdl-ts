@@ -11,7 +11,7 @@ import { registerWinListener } from './win'
  */
 export default function registerListener(win: BrowserWindow, dbo: DbOperate): void {
   // 注册设置相关事件
-  registerConfigListener()
+  registerConfigListener(win.webContents)
 
   // 注册窗口相关事件
   registerWinListener(win)

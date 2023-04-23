@@ -8,7 +8,7 @@ const defaultSetting: common.AppSetting = {
   isOpenProxy: true,
   proxy: {
     protocol: 'http',
-    host: '127.0.0.1',
+    host: '192.168.1.100',
     port: 1081
   },
   axios: {

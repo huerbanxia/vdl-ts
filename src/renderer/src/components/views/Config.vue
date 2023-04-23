@@ -6,9 +6,10 @@
 -->
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { ref, onActivated } from 'vue'
+import { ref, onActivated, onMounted } from 'vue'
 import useSettingStore from '../../store/useSettingStore'
 import { CollapseModelValue } from 'element-plus'
+import { IpcRendererEvent } from 'electron'
 
 const dialogVisible = ref(false)
 
@@ -46,6 +47,11 @@ const handleLoginBtn = (): void => {
 
 onActivated(() => {
   settingStore.init()
+})
+onMounted(() => {
+  window.api.updateConfig((_event: IpcRendererEvent, data: common.AppSetting) => {
+    settingStore.init()
+  })
 })
 </script>
 <template>

@@ -15,6 +15,7 @@ parentPort!.on('message', (task) => {
     log.info(`下载路径不存在 自动创建 ${filepath}`)
     fs.mkdirSync(filepath)
   }
+  // 优先下载最高清晰度
   let video = _.find(data.list, { type: 'Source' })
   if (!video) {
     video = _.find(data.list, { type: '540' })

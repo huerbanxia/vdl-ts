@@ -32,10 +32,10 @@ export class DbOperate {
 
   constructor(options?: Options) {
     this.db = dbInstance
-    this.insert = this.db.prepare(insertSql)
     if (options?.isInited) {
       this.initTable()
     }
+    this.insert = this.db.prepare(insertSql)
   }
 
   initTable(): void {

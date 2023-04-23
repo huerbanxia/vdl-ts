@@ -1,10 +1,10 @@
 import { resetToDefault, saveSetting, setting } from '@/main/setting'
 import { resetAxios } from '@/main/utils/http'
 import log from '@/main/utils/log'
-import { BrowserWindow, ipcMain, session } from 'electron'
+import { BrowserWindow, ipcMain, session, WebContents } from 'electron'
 import { join } from 'node:path'
 
-export const registerConfigListener = (): void => {
+export const registerConfigListener = (wc: WebContents): void => {
   // 处理获取设置事件
   ipcMain.handle('on-get-setting', () => {
     return setting
@@ -51,9 +51,13 @@ export const registerConfigListener = (): void => {
 
   // 更新Token配置
   ipcMain.handle('on-update-token', (_e, token: string) => {
+    log.info(token)
     if (token && token !== setting.axios.authorization) {
       log.info('自动更新Token')
       setting.axios.authorization = token
+
+      // 给前端发送更新后的设置信息
+      wc.send('update-setting', setting)
     }
   })
 }

@@ -50,6 +50,10 @@ const api = {
   },
   openPath(path: string): Promise<string> {
     return ipcRenderer.invoke('on-open-path', path)
+  },
+  // 更新渲染进程配置
+  updateConfig(callback: ICallbackInterface): void {
+    ipcRenderer.on('update-setting', callback)
   }
 }
 

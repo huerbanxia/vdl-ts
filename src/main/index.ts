@@ -14,7 +14,7 @@ import { DbOperate } from './db/db_operate'
 //   log.error(error.message)
 // })
 
-const dbo = new DbOperate()
+const dbo = new DbOperate({ isInited: true })
 
 function createWindow(): void {
   log.debug('创建新窗口')
