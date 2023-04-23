@@ -63,7 +63,14 @@ watch(isCheck, () => {
       </el-carousel-item>
     </el-carousel>
 
-    <tags :tags="video.tags" :size-format="video.sizeFormat"></tags>
+    <tags
+      :author="video.user.name"
+      :tags="video.tags"
+      :first="video.isFirst"
+      :saved="video.isSaved"
+      :deleted="video.isDeleted"
+      :size-format="video.sizeFormat"
+    ></tags>
     <el-text>{{ video.user.name + ' - ' + video.title }}</el-text>
   </el-card>
 </template>

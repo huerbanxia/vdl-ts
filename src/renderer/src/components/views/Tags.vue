@@ -5,17 +5,23 @@
  * Tags.vue
 -->
 <script lang="ts" setup>
-defineProps<{
-  tags?: Array<common.model.TagData>
+const props = defineProps<{
+  tags: Array<common.model.TagData>
   sizeFormat: string
+  first?: boolean
+  saved?: boolean
+  deleted?: boolean
+  author?: string
 }>()
+console.log(props.first)
 </script>
 <template>
   <div class="container">
-    <el-tag class="ml-2 tag">{{ sizeFormat }}</el-tag>
-    <el-tag class="ml-2 tag" type="success">首次</el-tag>
-    <!-- <el-tag class="ml-2 tag" type="success">下过</el-tag> -->
-    <el-tag class="ml-2 tag" type="danger">删除</el-tag>
+    <el-tag v-if="author" class="ml-2 tag" type="warning">{{ author }}</el-tag>
+    <el-tag v-if="sizeFormat" class="ml-2 tag">{{ sizeFormat }}</el-tag>
+    <el-tag v-if="first" class="ml-2 tag" type="success">首次</el-tag>
+    <el-tag v-if="saved" class="ml-2 tag" type="success">下过</el-tag>
+    <el-tag v-if="deleted" class="ml-2 tag" type="danger">删除</el-tag>
     <br />
     <el-scrollbar max-height="50px">
       <el-tag v-for="(data, index) in tags" :key="index" class="ml-2 tag">{{ data.id }}</el-tag>

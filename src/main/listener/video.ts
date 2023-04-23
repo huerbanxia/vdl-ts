@@ -5,6 +5,7 @@ import { http } from '@/main/utils/http'
 import log from '@/main/utils/log'
 import WorkerPool from '@/main/utils/worker_pool'
 import { WebContents, ipcMain, shell } from 'electron'
+import _ from 'lodash'
 
 interface Params {
   subscribed?: boolean
@@ -14,10 +15,16 @@ interface Params {
   limit?: number
 }
 
+type VideoData = common.model.VideoData
+type Task = common.model.Task
+
 // 初始化下载线程池
 const pool = new WorkerPool(setting.download.maxTaskNum)
 
 export const registerVideoListener = (wc: WebContents, dbo: DbOperate): void => {
+  /**
+   * 处理获取视频列表事件
+   */
   ipcMain.handle('on-get-video-page-list', async (_e, data) => {
     // 获取 token 接口 https://api.iwara.tv/user/token
     // let res = await http.get('https://api.iwara.tv/videos?sort=date&rating=all')
@@ -39,33 +46,22 @@ export const registerVideoListener = (wc: WebContents, dbo: DbOperate): void => 
       return item.id
     })
     // 查询数据库数据id
-    const ids = dbo.selectId(idList)
-    const insertData: Array<common.model.VideoData> = []
-    res.results.forEach((item) => {
-      if (ids.includes(item.id)) {
-        item.isData = true
-      } else {
-        item.isData = false
-        const videoData: common.model.VideoData = {
-          ...item,
-          size: item.file?.size,
-          fileId: item.file?.id,
-          isSaved: 0
-        }
-        insertData.push(videoData)
-      }
+    const videos = dbo.selectId(idList)
+    const videoIds = videos.map((item) => {
+      return item.id
     })
+    const insertData: Array<VideoData> = getInserData(res, videoIds, videos)
     dbo.saveVideoList(insertData)
     return res
   })
 
-  ipcMain.handle('on-download-video', (_e, data: common.model.Task) => {
+  ipcMain.handle('on-download-video', (_e, data: Task) => {
     log.info(`接收到消息`, data.titleFormat)
     analyzeDownloadUrl(data)
   })
 
   // 监听解析失败事件 再次解析
-  ipcMain.on('on-download-video', (_event, data: common.model.Task) => {
+  ipcMain.on('on-download-video', (_event, data: Task) => {
     log.info(`接收到失败消息 ${data.titleFormat} 当前重试次数${data.retryNum}`)
     if (data.retryNum < setting.download.failRetryNum) {
       log.info(`再次尝试解析 ${data.titleFormat}`)
@@ -84,7 +80,7 @@ export const registerVideoListener = (wc: WebContents, dbo: DbOperate): void => 
 
   // 接收到下载信息后进行处理
   // event.sender.send 返回的消息必须用 on 监听
-  ipcMain.on('on-return-info-list', (_event, data: common.model.Task) => {
+  ipcMain.on('on-return-info-list', (_event, data: Task) => {
     log.info('接收到下载信息 创建下载任务', data.list?.length)
     // 更新任务显示状态到 等待下载
     wc.send('update-process', { taskId: data.id, process: 0, status: '1' })
@@ -106,4 +102,33 @@ export const registerVideoListener = (wc: WebContents, dbo: DbOperate): void => 
   ipcMain.handle('on-open-path', (_event, path: string): Promise<string> => {
     return shell.openPath(path)
   })
+}
+function getInserData(
+  res: common.params.VideoResults,
+  videoIds: string[],
+  videos: VideoData[]
+): Array<VideoData> {
+  const insertData: Array<VideoData> = []
+  res.results.forEach((item) => {
+    // 判断数据库中是否存在数据
+    if (videoIds.includes(item.id)) {
+      item.isFirst = false
+      const video = _.find(videos, { id: item.id })
+      item.isSaved = video?.isSaved === 1
+      item.isDeleted = video?.isDeleted === 1
+    } else {
+      item.isFirst = true
+      item.isSaved = false
+      item.isDeleted = false
+      const videoData: VideoData = {
+        ...item,
+        size: item.file?.size,
+        fileId: item.file?.id,
+        isSaved: 0,
+        isDeleted: 0
+      }
+      insertData.push(videoData)
+    }
+  })
+  return insertData
 }

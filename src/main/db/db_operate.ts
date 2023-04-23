@@ -42,17 +42,14 @@ export class DbOperate {
     this.db.exec(createTableVideoSql)
   }
 
-  selectId(ids: string[]): string[] {
-    const sql = `SELECT id FROM video WHERE id in (${ids.map((id) => {
+  selectId(ids: string[]): Array<common.model.VideoData> {
+    const sql = `SELECT id , isSaved , isDeleted FROM video WHERE id in (${ids.map((id) => {
       return `'${id}'`
     })})`
     const stmt = this.db.prepare(sql)
     const videos = stmt.all() as common.model.VideoData[]
-    const videoIds = videos.map((item) => {
-      return item.id
-    })
-    log.debug(videoIds)
-    return videoIds
+    log.debug(videos)
+    return videos
   }
 
   saveVideoList(videos: Array<common.model.VideoData>): void {
