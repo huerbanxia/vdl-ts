@@ -5,9 +5,9 @@
  * VideoItem.vue
 -->
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
-import Tags from '@renderer/components/views/Tags.vue'
 import { Picture as IconPicture } from '@element-plus/icons-vue'
+import Tags from '@renderer/components/views/Tags.vue'
+import { ref, watch } from 'vue'
 
 const props = defineProps<{
   index: number

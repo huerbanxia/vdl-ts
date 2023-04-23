@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive } from 'vue'
-import useSettingStore from '../../store/useSettingStore'
+import useSettingStore from '@renderer/store/useSettingStore'
 
 const settingStore = useSettingStore()
 

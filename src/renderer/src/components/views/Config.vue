@@ -5,13 +5,13 @@
  * Config.vue
 -->
 <script lang="ts" setup>
-import { storeToRefs } from 'pinia'
-import { ref, onActivated, onMounted, reactive } from 'vue'
 import useSettingStore from '@renderer/store/useSettingStore'
 import useWinStore from '@renderer/store/useWinStore'
-import { CollapseModelValue } from 'element-plus'
-import { IpcRendererEvent } from 'electron'
 import { formatSize } from '@renderer/utils/format'
+import { IpcRendererEvent } from 'electron'
+import { CollapseModelValue } from 'element-plus'
+import { storeToRefs } from 'pinia'
+import { onActivated, onMounted, reactive, ref } from 'vue'
 
 const dialogVisible = ref(false)
 

@@ -5,14 +5,14 @@
  * VideoListPic.vue
 -->
 <script lang="ts" setup>
-import { ref, reactive, onMounted, watch, Ref } from 'vue'
+import { ArrowDown, ArrowUp } from '@element-plus/icons-vue'
+import VideoItem from '@renderer/components/views/VideoItem.vue'
+import useTaskStore from '@renderer/store/useTaskStore'
+import useWinStore from '@renderer/store/useWinStore'
+import { formatFileName, formatSize } from '@renderer/utils/format'
 import { ElMessage } from 'element-plus'
 import _ from 'lodash'
-import useTaskStore from '../../store/useTaskStore'
-import useWinStore from '@renderer/store/useWinStore'
-import { ArrowDown, ArrowUp } from '@element-plus/icons-vue'
-import { formatFileName, formatSize } from '../../utils/format'
-import VideoItem from '@renderer/components/views/VideoItem.vue'
+import { Ref, onMounted, reactive, ref, watch } from 'vue'
 
 // 仓库初始化
 const winStore = useWinStore()
@@ -51,10 +51,12 @@ const loadData = (): void => {
   window.api
     .getVideoPageList(params)
     .then((res) => {
+      console.log(res)
+
       tableData.value = res.results
       total.value = res.count
     })
-    .catch((e) => {
+    .catch((e: Error) => {
       console.log(e)
       ElMessage.error('数据加载失败 请检查网络连接')
     })

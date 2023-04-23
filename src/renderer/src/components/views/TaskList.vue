@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import { IpcRendererEvent } from 'electron'
 import type { TabsPaneContext } from 'element-plus'
+import { onMounted, ref } from 'vue'
+import useSettingStore from '../../store/useSettingStore'
 import useTaskStore from '../../store/useTaskStore'
 import useWinStore from '../../store/useWinStore'
-import useSettingStore from '../../store/useSettingStore'
 
 const winStore = useWinStore()
 const taskStore = useTaskStore()

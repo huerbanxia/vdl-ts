@@ -5,12 +5,11 @@
  * AsideMenu.vue
 -->
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { Document, Menu as IconMenu, Location, Expand, Fold, Sort } from '@element-plus/icons-vue'
-
-import useTaskStore from '../store/useTaskStore'
+import { Document, Expand, Fold, Menu as IconMenu, Location, Sort } from '@element-plus/icons-vue'
+import useTaskStore from '@renderer/store/useTaskStore'
 import useThemeStore from '@renderer/store/useThemeStore'
+import { computed, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 const taskStore = useTaskStore()
 const themeStore = useThemeStore()

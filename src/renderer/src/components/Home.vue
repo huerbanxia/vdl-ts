@@ -5,10 +5,10 @@
  * AsideMenu.vue
 -->
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import AsideMenu from './AsideMenu.vue'
-import TitleBar from './TitleBar.vue'
 import 'animate.css'
+import { onMounted, ref } from 'vue'
+import AsideMenu from '@renderer/components/AsideMenu.vue'
+import TitleBar from '@renderer/components/TitleBar.vue'
 // import { ElMessage } from 'element-plus'
 
 /**
