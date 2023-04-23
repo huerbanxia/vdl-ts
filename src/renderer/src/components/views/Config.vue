@@ -50,7 +50,7 @@ onActivated(() => {
 })
 onMounted(() => {
   window.api.updateConfig((_event: IpcRendererEvent, data: common.AppSetting) => {
-    settingStore.init()
+    settingStore.init(data)
   })
 })
 </script>

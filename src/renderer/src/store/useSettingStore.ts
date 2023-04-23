@@ -37,7 +37,11 @@ const useSettingStore = defineStore('settingStore', {
     }
   },
   actions: {
-    init() {
+    init(config?: common.AppSetting) {
+      if (config) {
+        this.setting = config
+        return
+      }
       window.api.getSetting().then((setting: common.AppSetting) => {
         this.setting = setting
       })
