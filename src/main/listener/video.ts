@@ -1,4 +1,4 @@
-import { DbOperate } from '@/main/db/db_operate'
+import { dbo } from '@/main/db/db_operate'
 import { setting } from '@/main/setting'
 import { analyzeDownloadUrl } from '@/main/utils/analyze'
 import { http } from '@/main/utils/http'
@@ -23,7 +23,7 @@ type Task = common.model.Task
 // 初始化下载线程池
 const pool = new WorkerPool(setting.download.maxTaskNum)
 
-export const registerVideoListener = (wc: WebContents, dbo: DbOperate): void => {
+export const registerVideoListener = (wc: WebContents): void => {
   /**
    * 处理获取视频列表事件
    */

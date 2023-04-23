@@ -6,10 +6,11 @@
 -->
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { ref, onActivated, onMounted } from 'vue'
-import useSettingStore from '../../store/useSettingStore'
+import { ref, onActivated, onMounted, reactive } from 'vue'
+import useSettingStore from '@renderer/store/useSettingStore'
 import { CollapseModelValue } from 'element-plus'
 import { IpcRendererEvent } from 'electron'
+import { formatSize } from '@renderer/utils/format'
 
 const dialogVisible = ref(false)
 
@@ -17,8 +18,13 @@ const settingStore = useSettingStore()
 
 const { setting: configForm } = storeToRefs(settingStore)
 
+const dataBaseInfo = reactive({
+  count: 0,
+  fileSize: 0
+})
+
 // 默认展开项
-const activeNames = ref(['0', '1', '2'])
+const activeNames = ref(['0', '1', '2', '3'])
 const handleChange = (value: CollapseModelValue): void => {
   console.log(value)
 }
@@ -47,6 +53,11 @@ const handleLoginBtn = (): void => {
 
 onActivated(() => {
   settingStore.init()
+
+  window.api.getDataBaseInfo().then((info: common.params.DataBaseInfo) => {
+    dataBaseInfo.count = info.count
+    dataBaseInfo.fileSize = info.fileSize
+  })
 })
 onMounted(() => {
   window.api.updateConfig((_event: IpcRendererEvent, data: common.AppSetting) => {
@@ -71,6 +82,7 @@ onMounted(() => {
               <template #title>
                 <h2>用户</h2>
               </template>
+
               <el-form-item label="用户Token">
                 <el-input v-model="configForm.axios.authorization" />
               </el-form-item>
@@ -78,6 +90,7 @@ onMounted(() => {
                 <el-button plain @click="handleLoginBtn">登录</el-button>
               </el-form-item>
             </el-collapse-item>
+
             <el-collapse-item name="1">
               <template #title>
                 <h2>代理</h2>
@@ -114,6 +127,7 @@ onMounted(() => {
               <template #title>
                 <h2>下载</h2>
               </template>
+
               <el-form-item label="保存路径" style="margin-top: 10px">
                 <el-button plain style="width: 25%" @click="handleSelectSavePathBtn"
                   >选择路径</el-button
@@ -138,6 +152,22 @@ onMounted(() => {
 
               <el-form-item label="下载请求超时时间(ms)">
                 <el-input v-model="configForm.axios.timeout" />
+              </el-form-item>
+            </el-collapse-item>
+
+            <el-collapse-item name="3">
+              <template #title>
+                <h2>数据库</h2>
+              </template>
+
+              <el-form-item label="当前数据量"> {{ dataBaseInfo.count }} 条 </el-form-item>
+              <el-form-item label="数据文件大小">
+                {{ formatSize(dataBaseInfo.fileSize) }}
+              </el-form-item>
+              <el-form-item label="">
+                <el-button plain style="width: 20%" @click="handleSelectSavePathBtn"
+                  >重建数据库
+                </el-button>
               </el-form-item>
             </el-collapse-item>
           </el-collapse>

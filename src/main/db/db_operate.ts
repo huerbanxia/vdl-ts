@@ -25,6 +25,10 @@ interface Options {
   isInited?: boolean
 }
 
+interface selectCountRes {
+  count: number
+}
+
 export class DbOperate {
   db: BetterSqlite3.Database
   insert: BetterSqlite3.Statement
@@ -71,7 +75,17 @@ export class DbOperate {
     updateStmt.run({ id: videoId, savePath: savePath })
   }
 
+  selectCount(): number {
+    const selectCountStmt = this.db.prepare(`select count(id) as count from video`)
+    const result = selectCountStmt.get() as selectCountRes
+    return result.count
+  }
+
   exit(): void {
     this.db.close()
   }
 }
+
+const dbo = new DbOperate({ isInited: true })
+
+export { dbo }

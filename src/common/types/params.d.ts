@@ -23,5 +23,12 @@ declare namespace common {
       page: number
       results: Array<common.model.Video>
     }
+
+    interface DataBaseInfo {
+      // 数据量
+      count: number
+      // 数据库文件大小
+      fileSize: number
+    }
   }
 }

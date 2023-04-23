@@ -54,6 +54,9 @@ const api = {
   // 更新渲染进程配置
   updateConfig(callback: ICallbackInterface): void {
     ipcRenderer.on('update-setting', callback)
+  },
+  getDataBaseInfo(): Promise<common.params.DataBaseInfo> {
+    return ipcRenderer.invoke('on-get-database-info')
   }
 }
 

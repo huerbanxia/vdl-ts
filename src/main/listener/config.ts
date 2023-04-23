@@ -1,8 +1,14 @@
+import { dbo } from '@/main/db/db_operate'
+import { dbPath } from '@/main/db/db_path'
 import { resetToDefault, saveSetting, setting } from '@/main/setting'
 import { resetAxios } from '@/main/utils/http'
 import log from '@/main/utils/log'
-import { BrowserWindow, ipcMain, session, WebContents } from 'electron'
+import { BrowserWindow, WebContents, ipcMain, session } from 'electron'
+import fs from 'node:fs'
 import { join } from 'node:path'
+
+type AppSetting = common.AppSetting
+type DataBaseInfo = common.params.DataBaseInfo
 
 export const registerConfigListener = (wc: WebContents): void => {
   // 处理获取设置事件
@@ -11,14 +17,14 @@ export const registerConfigListener = (wc: WebContents): void => {
   })
 
   // 处理保存设置事件
-  ipcMain.handle('on-save-setting', (_event, userSetting: common.AppSetting): boolean => {
+  ipcMain.handle('on-save-setting', (_event, userSetting: AppSetting): boolean => {
     saveSetting(userSetting)
     resetAxios()
     return true
   })
 
   // 处理保存设置事件
-  ipcMain.handle('on-reset-setting', (): common.AppSetting => {
+  ipcMain.handle('on-reset-setting', (): AppSetting => {
     resetToDefault()
     resetAxios()
     log.debug(setting)
@@ -57,5 +63,16 @@ export const registerConfigListener = (wc: WebContents): void => {
       // 给前端发送更新后的设置信息
       wc.send('update-setting', setting)
     }
+  })
+
+  // 获取数据库信息事件
+  ipcMain.handle('on-get-database-info', (): common.params.DataBaseInfo => {
+    const stats = fs.statSync(dbPath)
+    const count = dbo.selectCount()
+    const info: DataBaseInfo = {
+      count: count,
+      fileSize: stats.size
+    }
+    return info
   })
 }

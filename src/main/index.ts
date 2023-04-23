@@ -7,14 +7,12 @@ import defaultSetting from '../common/defaultSetting'
 import { saveSetting, setting } from './setting'
 // import registerListener from './listener'
 import registerListener from '@/main/listener/index'
-import { DbOperate } from './db/db_operate'
+import { dbo } from '@/main/db/db_operate'
 
 // 全局异常处理
 // process.on('uncaughtException', function (error) {
 //   log.error(error.message)
 // })
-
-const dbo = new DbOperate({ isInited: true })
 
 function createWindow(): void {
   log.debug('创建新窗口')
@@ -97,7 +95,7 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
   // 注册主进程监听事件
-  registerListener(mainWindow, dbo)
+  registerListener(mainWindow)
 }
 
 app.whenReady().then(() => {
