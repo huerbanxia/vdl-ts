@@ -6,6 +6,7 @@ import log from '@/main/utils/log'
 import WorkerPool from '@/main/utils/worker_pool'
 import { WebContents, ipcMain, shell } from 'electron'
 import _ from 'lodash'
+import fs from 'node:fs'
 
 interface Params {
   subscribed?: boolean
@@ -16,6 +17,7 @@ interface Params {
 }
 
 type VideoData = common.model.VideoData
+type VideoResults = common.params.VideoResults
 type Task = common.model.Task
 
 // 初始化下载线程池
@@ -39,7 +41,7 @@ export const registerVideoListener = (wc: WebContents, dbo: DbOperate): void => 
     // params.rating = 'all'
     params.page = data.currentPage - 1
     params.limit = data.pageSize
-    const res: common.params.VideoResults = await http.get('https://api.iwara.tv/videos', {
+    const res: VideoResults = await http.get('https://api.iwara.tv/videos', {
       params
     })
     const idList: string[] = res.results.map((item) => {
@@ -47,10 +49,7 @@ export const registerVideoListener = (wc: WebContents, dbo: DbOperate): void => 
     })
     // 查询数据库数据id
     const videos = dbo.selectId(idList)
-    const videoIds = videos.map((item) => {
-      return item.id
-    })
-    const insertData: Array<VideoData> = getInserData(res, videoIds, videos)
+    const insertData: Array<VideoData> = getInsertData(res, videos)
     dbo.saveVideoList(insertData)
     return res
   })
@@ -104,14 +103,23 @@ export const registerVideoListener = (wc: WebContents, dbo: DbOperate): void => 
 
   // 打开文件或文件夹
   ipcMain.handle('on-open-path', (_event, path: string): Promise<string> => {
+    if (!fs.existsSync(path)) {
+      // 递归创建目录
+      fs.mkdirSync(path, { recursive: true })
+    }
     return shell.openPath(path)
   })
 }
-function getInserData(
-  res: common.params.VideoResults,
-  videoIds: string[],
-  videos: VideoData[]
-): Array<VideoData> {
+/**
+ * 处理接口返回数据成要插入数据库的格式
+ * @param res 接口返回的数据
+ * @param videos 数据库查询到的数据
+ * @returns 要插入数据库的数据
+ */
+function getInsertData(res: VideoResults, videos: VideoData[]): Array<VideoData> {
+  const videoIds = videos.map((item) => {
+    return item.id
+  })
   const insertData: Array<VideoData> = []
   res.results.forEach((item) => {
     // 判断数据库中是否存在数据

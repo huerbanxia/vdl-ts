@@ -51,11 +51,9 @@ export const registerConfigListener = (wc: WebContents): void => {
 
   // 更新Token配置
   ipcMain.handle('on-update-token', (_e, token: string) => {
-    log.info(token)
     if (token && token !== setting.axios.authorization) {
       log.info('自动更新Token')
       setting.axios.authorization = token
-
       // 给前端发送更新后的设置信息
       wc.send('update-setting', setting)
     }

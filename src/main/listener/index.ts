@@ -10,12 +10,12 @@ import { registerWinListener } from './win'
  * @param dbo 数据库操作对象
  */
 export default function registerListener(win: BrowserWindow, dbo: DbOperate): void {
-  // 注册设置相关事件
+  // 设置相关事件
   registerConfigListener(win.webContents)
 
-  // 注册窗口相关事件
+  // 窗口相关事件
   registerWinListener(win)
 
-  // 视频信息相关处理接口
+  // 视频信息相关事件
   registerVideoListener(win.webContents, dbo)
 }

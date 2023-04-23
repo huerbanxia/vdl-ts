@@ -20,7 +20,7 @@ console.log(props.first)
     <el-tag v-if="author" class="ml-2 tag" type="warning">{{ author }}</el-tag>
     <el-tag v-if="sizeFormat" class="ml-2 tag">{{ sizeFormat }}</el-tag>
     <el-tag v-if="first" class="ml-2 tag" type="success">首次</el-tag>
-    <el-tag v-if="saved" class="ml-2 tag" type="success">下过</el-tag>
+    <el-tag v-if="saved" class="ml-2 tag" type="success">下载过</el-tag>
     <el-tag v-if="deleted" class="ml-2 tag" type="danger">删除</el-tag>
     <br />
     <el-scrollbar max-height="50px">

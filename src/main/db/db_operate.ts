@@ -17,9 +17,9 @@ const createTableVideoSql = `CREATE TABLE if not exists "video" (
   PRIMARY KEY ("id")
 );`
 
-const insertSql = `INSERT INTO video ( id, title, slug, createdAt, size )
+const insertSql = `INSERT INTO video ( id, title, slug, createdAt, size, isSaved, isDeleted)
 VALUES
-  (  @id, @title, @slug, @createdAt, @size )`
+  (  @id, @title, @slug, @createdAt, @size, @isSaved, @isDeleted)`
 
 interface Options {
   isInited?: boolean

@@ -156,14 +156,13 @@ const handleAffixScroll = ({ scrollTop }): void => {
 onMounted(() => {
   loadData()
 })
-watch(currentPage, (newVal, oldVal) => {
+watch(currentPage, () => {
   loadData()
   document.getElementById('videoListPic')!.scrollTop = 1
-  console.log(newVal, oldVal)
+  // console.log(newVal, oldVal)
 })
-watch(pageSize, (newVal, oldVal) => {
+watch(pageSize, () => {
   loadData()
-  console.log(newVal, oldVal)
 })
 
 watch(isAll, () => {
@@ -249,7 +248,7 @@ watch(isAll, () => {
       <div v-loading="listLoading" class="video-list">
         <!-- 视频主体部分 -->
         <el-checkbox v-model="isAll" label="全选" />
-        <el-row :gutter="30">
+        <el-row :gutter="10">
           <el-col v-for="(item, index) in tableData" :key="index" :span="6">
             <video-item :index="index" :video="item" @change="handlePicItemClick"></video-item>
           </el-col>
