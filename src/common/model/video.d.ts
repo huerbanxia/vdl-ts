@@ -23,7 +23,9 @@ declare namespace common {
       source: string
       imgUrl: string
       previewSrcList: string[]
+      // 是否默认选中
       isCheck: boolean
+      // 是否自动播放
       isAutoplay: boolean
       tags: Array<TagData>
       // 是否为第一次出现的数据 true 数据库中无此数据

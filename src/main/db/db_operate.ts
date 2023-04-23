@@ -29,6 +29,8 @@ interface selectCountRes {
   count: number
 }
 
+type VideoData = common.model.VideoData
+
 export class DbOperate {
   db: BetterSqlite3.Database
   insert: BetterSqlite3.Statement
@@ -45,17 +47,17 @@ export class DbOperate {
     this.db.exec(createTableVideoSql)
   }
 
-  selectId(ids: string[]): Array<common.model.VideoData> {
+  selectId(ids: string[]): Array<VideoData> {
     const sql = `SELECT id , isSaved , isDeleted FROM video WHERE id in (${ids.map((id) => {
       return `'${id}'`
     })})`
     const stmt = this.db.prepare(sql)
-    const videos = stmt.all() as common.model.VideoData[]
+    const videos = stmt.all() as VideoData[]
     log.debug(videos)
     return videos
   }
 
-  saveVideoList(videos: Array<common.model.VideoData>): void {
+  saveVideoList(videos: Array<VideoData>): void {
     if (videos.length > 0) {
       //创建事务
       const insertTransaction = this.db.transaction((list) => {
@@ -64,7 +66,7 @@ export class DbOperate {
       insertTransaction(videos)
     }
   }
-  saveVideo(video: common.model.VideoData): void {
+  saveVideo(video: VideoData): void {
     this.insert.run(video)
   }
 

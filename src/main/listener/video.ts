@@ -44,6 +44,27 @@ export const registerVideoListener = (wc: WebContents): void => {
     const res: VideoResults = await http.get('https://api.iwara.tv/videos', {
       params
     })
+
+    res.results.forEach((item) => {
+      item.isCheck = false
+      item.isAutoplay = false
+      if (item.file) {
+        item.source = 'iwara'
+        item.imgUrl = `https://i.iwara.tv/image/thumbnail/${item.file.id}/thumbnail-00.jpg`
+        const previewSrcList: string[] = []
+        for (let i = 0; i <= 11; i++) {
+          previewSrcList.push(
+            `https://i.iwara.tv/image/thumbnail/${item.file.id}/thumbnail-${i
+              .toString()
+              .padStart(2, '0')}.jpg`
+          )
+        }
+        item.previewSrcList = previewSrcList
+      } else {
+        item.source = 'youtube'
+      }
+    })
+
     const idList: string[] = res.results.map((item) => {
       return item.id
     })

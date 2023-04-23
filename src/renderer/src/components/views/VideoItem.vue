@@ -53,14 +53,26 @@ watch(isCheck, () => {
       @mouseleave="handleMouseleaveEvent()"
     >
       <data-tag :num-views="video.numViews" :num-likes="video.numLikes"></data-tag>
-      <el-carousel-item v-for="(img, imgIndex) in video.previewSrcList" :key="imgIndex">
+
+      <el-carousel-item v-if="!isAutoPlay" :key="0">
         <!-- 图片尺寸 220*160 -->
-        <el-image :src="img" fit="contain" style="width: 100%" draggable="false">
+        <el-image :src="video.imgUrl" fit="contain" style="width: 100%" draggable="false">
           <template #error>
             <el-icon><icon-picture /></el-icon>
           </template>
         </el-image>
       </el-carousel-item>
+
+      <template v-if="isAutoPlay">
+        <el-carousel-item v-for="(img, imgIndex) in video.previewSrcList" :key="imgIndex">
+          <!-- 图片尺寸 220*160 -->
+          <el-image :src="img" fit="contain" style="width: 100%" draggable="false">
+            <template #error>
+              <el-icon><icon-picture /></el-icon>
+            </template>
+          </el-image>
+        </el-carousel-item>
+      </template>
     </el-carousel>
 
     <tags
@@ -69,7 +81,7 @@ watch(isCheck, () => {
       :first="video.isFirst"
       :saved="video.isSaved"
       :deleted="video.isDeleted"
-      :size-format="video.sizeFormat"
+      :size="video.file.size"
     ></tags>
     <el-text>{{ video.user.name + ' - ' + video.title }}</el-text>
   </el-card>

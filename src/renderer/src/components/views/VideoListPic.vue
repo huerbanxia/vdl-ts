@@ -9,12 +9,13 @@ import { ref, reactive, onMounted, watch, Ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import _ from 'lodash'
 import useTaskStore from '../../store/useTaskStore'
+import useWinStore from '@renderer/store/useWinStore'
 import { ArrowDown, ArrowUp } from '@element-plus/icons-vue'
-import { formatFileName, formatSize, formatDateTime } from '../../utils/format'
+import { formatFileName, formatSize } from '../../utils/format'
 import VideoItem from '@renderer/components/views/VideoItem.vue'
 
 // 仓库初始化
-// const winStore = useWinStore()
+const winStore = useWinStore()
 const taskStore = useTaskStore()
 
 // 分页相关
@@ -50,32 +51,6 @@ const loadData = (): void => {
   window.api
     .getVideoPageList(params)
     .then((res) => {
-      console.log(res.results)
-      res.results.forEach((item: common.model.Video) => {
-        // 添加进度数据
-        item.process = 0
-        // 添加进度状态数据
-        item.status = true
-        item.createdAtFormat = formatDateTime(item.createdAt)
-        item.isCheck = false
-        item.isAutoplay = false
-        if (item.file) {
-          item.sizeFormat = formatSize(item.file.size)
-          item.source = 'iwara'
-          item.imgUrl = `https://i.iwara.tv/image/thumbnail/${item.file.id}/thumbnail-00.jpg`
-          const previewSrcList: string[] = []
-          for (let i = 0; i <= 11; i++) {
-            previewSrcList.push(
-              `https://i.iwara.tv/image/thumbnail/${item.file.id}/thumbnail-${i
-                .toString()
-                .padStart(2, '0')}.jpg`
-            )
-          }
-          item.previewSrcList = previewSrcList
-        } else {
-          item.source = 'youtube'
-        }
-      })
       tableData.value = res.results
       total.value = res.count
     })
@@ -172,7 +147,7 @@ watch(isAll, () => {
 })
 </script>
 <template>
-  <el-scrollbar max-height="700">
+  <el-scrollbar :max-height="winStore.height">
     <el-card id="videoListPic" class="container">
       <el-affix :offset="40" target="#videoListPic" @scroll="handleAffixScroll">
         <div :class="[isAffixTopPadding ? 'affix-padding' : 'affix-no-padding', 'affix-dark-bg']">
