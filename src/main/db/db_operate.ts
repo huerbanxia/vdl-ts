@@ -21,6 +21,10 @@ const insertSql = `INSERT INTO video ( id, title, slug, createdAt, size, isSaved
 VALUES
   (  @id, @title, @slug, @createdAt, @size, @isSaved, @isDeleted)`
 
+const insertSqlDist = `INSERT INTO video_dist ( id, title, author, savePath)
+VALUES
+  (  @id, @title, @author, @savePath)`
+
 interface Options {
   isInited?: boolean
 }
@@ -68,6 +72,11 @@ export class DbOperate {
   }
   saveVideo(video: VideoData): void {
     this.insert.run(video)
+  }
+
+  saveVideoDist(data): void {
+    const stmt = this.db.prepare(insertSqlDist)
+    stmt.run(data)
   }
 
   updateVideo(videoId: string, savePath: string): void {

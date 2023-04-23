@@ -54,6 +54,10 @@ const handleLoginBtn = (): void => {
   window.api.login()
 }
 
+const handleResetDb = (): void => {
+  window.api.scanDir()
+}
+
 onActivated(() => {
   settingStore.init()
 
@@ -169,9 +173,7 @@ onMounted(() => {
                   {{ formatSize(dataBaseInfo.fileSize) }}
                 </el-form-item>
                 <el-form-item label="">
-                  <el-button plain style="width: 20%" @click="handleSelectSavePathBtn"
-                    >重建数据库
-                  </el-button>
+                  <el-button plain style="width: 20%" @click="handleResetDb">重建数据库 </el-button>
                 </el-form-item>
               </el-collapse-item>
             </el-collapse>

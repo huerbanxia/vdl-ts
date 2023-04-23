@@ -75,4 +75,28 @@ export const registerConfigListener = (wc: WebContents): void => {
     }
     return info
   })
+
+  ipcMain.handle('on-scan-dir', () => {
+    const path = `Z:\\里\\待看\\iwara_爬取\\`
+    fs.readdir(path, (err, files) => {
+      if (err) {
+        log.error(err)
+        return
+      }
+      log.info(`获取到数据 ${files.length} 条`)
+
+      for (let i = 0; i < files.length; i++) {
+        const fileName = files[i]
+        log.info(`当前处理第 ${i} 条 文件名${fileName}`)
+        const split = fileName.split(' - ')
+        const filePath = join(path, fileName)
+        dbo.saveVideoDist({
+          id: i.toString(),
+          title: split[1],
+          author: split[0],
+          savePath: filePath
+        })
+      }
+    })
+  })
 }

@@ -57,6 +57,9 @@ const api = {
   },
   getDataBaseInfo(): Promise<common.params.DataBaseInfo> {
     return ipcRenderer.invoke('on-get-database-info')
+  },
+  scanDir(): void {
+    ipcRenderer.invoke('on-scan-dir')
   }
 }
 
