@@ -25,7 +25,7 @@ const changeCollapse = (): void => {
 }
 
 const menuBgColor = computed(() => {
-  if (!themeStore.isDark) {
+  if (themeStore.isDark) {
     return '#222226'
   }
   return '#666672'
