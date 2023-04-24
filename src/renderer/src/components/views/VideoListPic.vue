@@ -10,7 +10,7 @@ import VideoItem from '@renderer/components/views/VideoItem.vue'
 import useTaskStore from '@renderer/store/useTaskStore'
 import useWinStore from '@renderer/store/useWinStore'
 import { formatFileName, formatSize } from '@renderer/utils/format'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElScrollbar } from 'element-plus'
 import _ from 'lodash'
 import { Ref, onMounted, reactive, ref, watch } from 'vue'
 
@@ -29,6 +29,8 @@ const isSubscribedDisable = ref(true)
 const listLoading = ref(false)
 const isAll = ref(false)
 const isAffixTopPadding = ref(false)
+
+const scrollbarRef = ref<InstanceType<typeof ElScrollbar>>()
 
 // 搜索
 const searchForm = reactive({
@@ -130,13 +132,22 @@ const handleAffixScroll = ({ scrollTop }): void => {
   }
 }
 
+const clearCheck = (): void => {
+  tableData.value.forEach((item) => {
+    item.isCheck = false
+  })
+}
+
 onMounted(() => {
   loadData()
 })
 watch(currentPage, () => {
   loadData()
-  document.getElementById('videoListPic')!.scrollTop = 1
+  clearCheck()
+  // document.getElementById('videoListPic')!.scrollTop = 1
   // console.log(newVal, oldVal)
+  // 滚动条滚动到顶部
+  scrollbarRef.value!.setScrollTop(0)
 })
 watch(pageSize, () => {
   loadData()
@@ -149,7 +160,7 @@ watch(isAll, () => {
 })
 </script>
 <template>
-  <el-scrollbar :max-height="winStore.height">
+  <el-scrollbar id="scrollbarRef" ref="scrollbarRef" :max-height="winStore.height">
     <el-card id="videoListPic" class="container">
       <el-affix :offset="40" target="#videoListPic" @scroll="handleAffixScroll">
         <div :class="[isAffixTopPadding ? 'affix-padding' : 'affix-no-padding', 'affix-dark-bg']">
@@ -220,7 +231,7 @@ watch(isAll, () => {
       </el-affix>
 
       <!-- 回到顶部 -->
-      <el-backtop target="#videoListPic" :right="100" :bottom="60" :visibility-height="10" />
+      <el-backtop target="#scrollbarRef" :right="100" :bottom="60" :visibility-height="10" />
 
       <div v-loading="listLoading" class="video-list">
         <!-- 视频主体部分 -->

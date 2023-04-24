@@ -1,5 +1,8 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
+// 任务列表组件在启动时就进行加载
+import TaskList from '@renderer/components/views/TaskList.vue'
+
 const routes: Readonly<RouteRecordRaw[]> = [
   {
     path: '/',
@@ -26,7 +29,8 @@ const routes: Readonly<RouteRecordRaw[]> = [
   {
     path: '/taskList',
     name: 'taskList',
-    component: () => import('@renderer/components/views/TaskList.vue')
+    // component: () => import('@renderer/components/views/TaskList.vue')
+    component: TaskList
   },
   {
     path: '/config',
